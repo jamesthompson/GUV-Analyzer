@@ -1,0 +1,46 @@
+.root {
+    -fx-font-family: "Lucida Sans";
+}
+
+.backdrop {
+    -fx-background-color:linear-gradient(white,#DDDDDD);
+}
+
+.chart-title {
+    -fx-font: bold 14pt "Lucida Sans";
+}
+
+.chart-series-line {
+    -fx-stroke-width: 1px;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.0) , 0.0, 0.0 , 0 , 0);
+}
+
+.chart-series-line:hover {
+    -fx-stroke: blue;
+}
+
+.default-color0.chart-series-line { -fx-stroke: black; }
+.default-color1.chart-series-line { -fx-stroke: red; }
+.default-color2.chart-series-line { -fx-stroke: green; }
+
+.default-color0.chart-symbol {
+    -fx-stroke: black;
+    -fx-stroke-width: 1px;
+    -fx-padding: 1px;
+}
+
+.axis-label {
+    -fx-font-size: 12pt;
+}
+
+.axis Text{
+    -fx-font-size: 8pt;
+}
+
+.axis {
+    -fx-tick-unit:1
+}
+
+.button {
+    -fx-font: regular 10pt "Lucida Sans";
+}

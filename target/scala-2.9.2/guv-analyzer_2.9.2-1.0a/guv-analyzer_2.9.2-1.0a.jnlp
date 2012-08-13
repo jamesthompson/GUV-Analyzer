@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="guv-analyzer_2.9.2-1.0a.jnlp">
+  <information>
+    <title>Sample JavaFX Application</title>
+    <vendor>Unknown vendor</vendor>
+    <description>Sample JavaFX 2.0 application.</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <jfx:javafx-runtime version="2.1+" href="http://javadl.sun.com/webapps/download/GetFile/javafx-latest/windows-i586/javafx2.jnlp"/>
+  </resources>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="guv-analyzer_2.9.2-1.0a.jar" size="29583843" download="eager" />
+    <jar href="jfxtras-labs-0.1.jar" size="872261" download="eager" />
+    <jar href="scala-library.jar" size="8857794" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="GUV Analyzer" >
+    <param name="requiredFXVersion" value="2.1+"/>
+  </applet>
+  <jfx:javafx-desc  width="800" height="600" main-class="com.jamesrthompson.Controllers.Launch"  name="GUV Analyzer" />
+  <update check="background"/>
+</jnlp>

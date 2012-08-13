@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="sphericalAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="657.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.SphericalAnalysisController">
+  <children>
+    <AreaChart fx:id="meanSquareChart" legendVisible="false" prefHeight="351.0" prefWidth="528.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="31.0">
+      <xAxis>
+        <NumberAxis id="xAxis1" side="BOTTOM" />
+      </xAxis>
+      <yAxis>
+        <NumberAxis id="yAxis1" side="LEFT" />
+      </yAxis>
+    </AreaChart>
+    <AreaChart fx:id="msaChart" legendVisible="false" onMouseClicked="#saveMSA" prefHeight="231.0" prefWidth="551.0" title="Mean Square Amplitudes" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="106.0" AnchorPane.topAnchor="24.0">
+      <xAxis>
+        <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
+      </xAxis>
+      <yAxis>
+        <NumberAxis id="yAxis1" label="&lt;|u|^2&gt;" side="LEFT" />
+      </yAxis>
+    </AreaChart>
+    <LineChart fx:id="ampChart" animated="false" createSymbols="false" legendVisible="false" onMouseClicked="#saveFrameAmp" prefHeight="231.0" prefWidth="551.0" title="Amplitudes For Frame" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="106.0">
+      <xAxis>
+        <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
+      </xAxis>
+      <yAxis>
+        <NumberAxis id="yAxis1" autoRanging="false" label="Amplitude" lowerBound="-0.1" prefHeight="146.0" prefWidth="43.0" side="LEFT" upperBound="0.1" />
+      </yAxis>
+    </LineChart>
+    <Slider id="sliderHorizontal1" fx:id="frameSlider" prefWidth="497.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="120.0" />
+    <TextField id="textField1" fx:id="bendingModField" layoutX="562.0" layoutY="78.0" prefWidth="69.0" promptText="Bend mod" />
+    <TextField id="textField1" fx:id="redSigmaField" layoutX="562.0" layoutY="111.0" prefWidth="69.0" promptText="Red Sigma" />
+    <Button id="button1" layoutX="565.0" layoutY="46.0" onAction="#fit" text="Fit" />
+    <TextField id="textField1" fx:id="startField" layoutX="562.0" layoutY="148.0" prefWidth="69.0" promptText="Start Mode" />
+    <TextField id="textField1" fx:id="endField" layoutX="562.0" layoutY="181.0" prefWidth="69.0" promptText="End Mode" />
+  </children>
+  <stylesheets>
+    <URL value="@SphericalLook.css" />
+  </stylesheets>
+</AnchorPane>

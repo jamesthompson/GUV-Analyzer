@@ -1,0 +1,43 @@
+<html><head>
+  <SCRIPT src="http://java.com/js/dtjava.js"></SCRIPT>
+<script>
+    function launchApplication(jnlpfile) {
+        dtjava.launch(            {
+                url : 'guv-analyzer_2.9.2-1.0a.jnlp'
+            },
+            {
+                javafx : '2.1+'
+            },
+            {}
+        );
+        return false;
+    }
+</script>
+
+<script>
+    function javafxEmbed_fxApp() {
+        dtjava.embed(
+            {
+                id : 'fxApp',
+                url : 'guv-analyzer_2.9.2-1.0a.jnlp',
+                placeholder : 'javafx',
+                width : 800,
+                height : 600
+            },
+            {
+                javafx : '2.1+'
+            },
+            {}
+        );
+    }
+    <!-- Embed FX application into web page once page is loaded -->
+    dtjava.addOnloadCallback(javafxEmbed_fxApp);
+</script>
+
+</head><body>
+<h2>Test page for <b>GUV Analyzer</b></h2>
+  <b>Webstart:</b> <a href='guv-analyzer_2.9.2-1.0a.jnlp' onclick="return launchApplication('guv-analyzer_2.9.2-1.0a.jnlp');">click to launch this app as webstart</a><br><hr><br>
+
+  <!-- Applet will be inserted here -->
+  <div id='javafx'></div>
+</body></html>

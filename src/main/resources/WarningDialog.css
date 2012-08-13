@@ -1,0 +1,8 @@
+.root {
+    -fx-font-family: "Lucida Sans";
+    -fx-font: bold 11pt "Lucida Sans";
+}
+
+.backdrop {
+    -fx-background-color:linear-gradient(white,#DDDDDD);
+}

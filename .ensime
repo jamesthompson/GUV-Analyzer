@@ -1,0 +1,8 @@
+(
+  :root-dir "/Users/James/Desktop/GUV_Analyzer"
+  :sources ("/Users/James/Desktop/GUV_Analyzer/src")
+  :compile-deps (
+  	"/Users/James/Desktop/GUV_Analyzer/lib/jfxrt.jar"
+  	"/Users/James/Desktop/GUV_Analyzer/lib/jfxtras-labs-0.1.jar"
+  	)
+  )

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="imageLoadAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="531.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.ImageLoadController">
+  <children>
+    <ToolBar id="toolBar1" fx:id="toolBar" prefWidth="531.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <items>
+        <Button id="button1" fx:id="chooseButton" focusTraversable="false" onAction="#pickFile" text="Choose Image File..." />
+        <CheckBox id="checkBox1" fx:id="edgePreviewButton" prefWidth="93.0" text="Preview ?" visible="false" />
+        <Button id="button3" fx:id="readyButton" onAction="#readied" opacity="0.0" prefWidth="109.0" text="Ready ?" visible="false" />
+        <ProgressBar id="progressBar1" fx:id="progressBar" prefHeight="21.0" prefWidth="150.0" progress="0.0" visible="false" />
+      </items>
+    </ToolBar>
+    <Slider id="sliderHorizontal1" fx:id="frameSlider" opacity="0.0" prefWidth="267.0" AnchorPane.leftAnchor="244.0" AnchorPane.topAnchor="316.0" />
+    <ImageView id="emptyImageView2" fx:id="cdPreview" fitHeight="255.0" fitWidth="255.0" preserveRatio="true" AnchorPane.bottomAnchor="330.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="54.0">
+      <effect>
+        <ColorAdjust contrast="1.0" saturation="1.0" />
+      </effect>
+    </ImageView>
+    <ImageView id="emptyImageView1" fx:id="imagePreview" fitHeight="255.0" fitWidth="255.0" opacity="0.45" AnchorPane.bottomAnchor="330.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="54.0" />
+    <VBox id="vBox1" fx:id="controllerBox" prefHeight="278.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="54.0" />
+    <ChoiceBox id="choiceBox1" fx:id="pixelScaleBox" visible="false" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="40.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ChoiceBox>
+    <TextField id="textField1" fx:id="fpsField" prefWidth="68.0" promptText="fps" visible="false" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="140.0" />
+  </children>
+  <stylesheets>
+    <URL value="@ImageLoadLook.css" />
+  </stylesheets>
+</AnchorPane>

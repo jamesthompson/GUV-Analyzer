@@ -1,0 +1,25 @@
+<project name="GUV Analyzer" basedir="." default="default" xmlns:fx="javafx:com.sun.javafx.tools.ant">
+          <target name="default">
+            <taskdef classpath="/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/lib/ant-javafx.jar" uri="javafx:com.sun.javafx.tools.ant" resource="com/sun/javafx/tools/ant/antlib.xml"></taskdef>
+            <fx:application name="GUV Analyzer" id="fxApp" mainClass="com.jamesrthompson.Controllers.Launch"></fx:application>
+            <fx:resources id="fxRes">
+              <fx:fileset dir="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/lib"></fx:fileset>
+            </fx:resources>
+            <fx:jar destfile="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/guv-analyzer_2.9.2-1.0a/guv-analyzer_2.9.2-1.0a.jar">
+              <fx:application refid="fxApp"></fx:application>
+              <fx:fileset dir="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/classes"></fx:fileset>
+              <fx:resources refid="fxRes"></fx:resources>
+            </fx:jar>
+            
+            
+            <fx:deploy width="800" outfile="guv-analyzer_2.9.2-1.0a" placeholderId="javafx" outdir="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/guv-analyzer_2.9.2-1.0a" height="600">
+              <fx:application refid="fxApp"></fx:application>
+              <fx:resources>
+                <fx:fileset includes="guv-analyzer_2.9.2-1.0a.jar" dir="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/guv-analyzer_2.9.2-1.0a"></fx:fileset>
+                <fx:fileset dir="/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/lib"></fx:fileset>
+              </fx:resources>
+              <fx:permissions cacheCertificates="false" elevated="false"></fx:permissions>
+              
+            </fx:deploy>
+          </target>
+        </project>
