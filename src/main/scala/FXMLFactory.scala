@@ -1,11 +1,14 @@
 package com.jamesrthompson.Controllers
 
-import 
+import java.io.InputStream
+import javafx.fxml.{FXML, FXMLLoader, Initializable, JavaFXBuilderFactory}
+import javafx.scene.layout.AnchorPane
+import javafx.scene.Scene
+import javafx.stage.Stage
 
 object FXMLFactory {
 	
-	
-	private def loadFXMLClass(fxml : String, title : String) : Initializable = {
+	def loadFXMLClass(fxml : String, title : String) : Initializable = {
 		val loader : FXMLLoader = new FXMLLoader
 		val in : InputStream = classOf[Launch].getResourceAsStream(fxml)
 		loader.setBuilderFactory(new JavaFXBuilderFactory)

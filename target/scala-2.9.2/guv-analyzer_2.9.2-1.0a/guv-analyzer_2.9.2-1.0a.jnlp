@@ -11,7 +11,7 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="guv-analyzer_2.9.2-1.0a.jar" size="29583843" download="eager" />
+    <jar href="guv-analyzer_2.9.2-1.0a.jar" size="29583819" download="eager" />
     <jar href="jfxtras-labs-0.1.jar" size="872261" download="eager" />
     <jar href="scala-library.jar" size="8857794" download="eager" />
   </resources>

@@ -6,6 +6,7 @@ import java.util.ResourceBundle
 import com.jamesrthompson.Data.GUV
 import javafx.scene.chart.{XYChart, LineChart}
 import javafx.scene.control.Slider
+import javafx.scene.input.MouseEvent
 import javafx.beans.value.{ObservableValue, ChangeListener}
 import scala.math._
 
@@ -94,7 +95,7 @@ class CorrelationsController extends Initializable {
 				def calc(in:List[Complex], k:Int) : List[Complex] = {
 					k < n / 2 match {
 						case false => in
-						case true => calc(e(k) - o(k) * cis(-2 * Pi * k / n) :: ( e(k) + o(k) * cis(-2 * Pi * k / n) :: in), k + 1)
+						case true => calc(e(k) - o(k) * cis(-2 * Pi * k / n) :: (e(k) + o(k) * cis(-2 * Pi * k / n) :: in), k + 1)
 					}
 				}
 				calc(List[Complex](), 0)
@@ -109,6 +110,18 @@ class CorrelationsController extends Initializable {
 		in.map((d:Double) => new XYChart.Data[Number, Number](in.indexOf(d), d)).map((np:XYChart.Data[Number,Number]) => series.getData.add(np))
 		series
 	}
+
+	def checkHistogram(event:MouseEvent) {
+		val modeNumber = modeSlider.getValue.toInt
+		val data = modesFuncFrames(modeNumber)
+		println(data.mkString("\n"))
+	}
+
+  def calcStDev(in: IndexedSeq[Double], average: Double) = {
+    	def squaredDifference(v1:Double, v2:Double) = pow(v1 - v2,2.0)
+    	val squared = in.foldLeft(0.0)(_ + squaredDifference(_, average))
+    	sqrt(squared / in.length.toDouble)
+  }
 	
 }
 

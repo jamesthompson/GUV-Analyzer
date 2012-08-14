@@ -331,34 +331,11 @@ class Controller extends Initializable {
 		deviationChart.getData.remove(devSeries)
 	}
 
-	// ----| Initializables
-
-	private def loadFXMLClass(fxml : String, title : String) : Initializable = {
-		val loader : FXMLLoader = new FXMLLoader
-		val in : InputStream = classOf[Launch].getResourceAsStream(fxml)
-		loader.setBuilderFactory(new JavaFXBuilderFactory)
-		loader.setLocation(classOf[Launch].getResource(fxml))
-		var page : AnchorPane = null
-		try {
-			page = loader.load(in).asInstanceOf[AnchorPane]
-		}
-		finally {
-			in.close
-		}
-		val scene : Scene = new Scene(page)
-		val stage : Stage = new Stage
-		stage.setScene(scene)
-		stage.sizeToScene
-		stage.setTitle(title)
-		stage.show
-		loader.getController.asInstanceOf[Initializable]
-	}
-
 	// ----| Image Importer Loader
 
 	def launchImageLoad(event : ActionEvent) {
 		try {
-			val imLoad : ImageLoadController = loadFXMLClass("/ImageLoadStage.fxml", "Image Loader").asInstanceOf[ImageLoadController]
+			val imLoad : ImageLoadController = FXMLFactory.loadFXMLClass("/ImageLoadStage.fxml", "Image Loader").asInstanceOf[ImageLoadController]
 			imLoad.transferGUVList(datasets)
 		}
 		catch {
@@ -382,7 +359,7 @@ class Controller extends Initializable {
 			return
 		}
 		try {
-			val corr : CorrelationsController = loadFXMLClass("/CorrelationsStage.fxml", "Correlations").asInstanceOf[CorrelationsController]
+			val corr : CorrelationsController = FXMLFactory.loadFXMLClass("/CorrelationsStage.fxml", "Correlations").asInstanceOf[CorrelationsController]
 			corr.guvTransfer(listView.getSelectionModel.getSelectedItem)
 		}
 		catch {
@@ -407,7 +384,7 @@ class Controller extends Initializable {
 		}
 		try {
 			if (listView.getSelectionModel.getSelectedItem.getContour(0).sphericalHarmonicAmplitudes != null) {
-				val sphALoad : SphericalAnalysisController = loadFXMLClass("/SphericalStage.fxml", "Spherical Harmonics Analysis").asInstanceOf[SphericalAnalysisController]
+				val sphALoad : SphericalAnalysisController = FXMLFactory.loadFXMLClass("/SphericalStage.fxml", "Spherical Harmonics Analysis").asInstanceOf[SphericalAnalysisController]
 				sphALoad.setData(listView.getSelectionModel.getSelectedItem)
 			}
 			else try {

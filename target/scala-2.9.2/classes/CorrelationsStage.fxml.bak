@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="586.0" prefWidth="600.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="Controllers.CorrelationsController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="600.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.CorrelationsController">
   <children>
-    <LineChart id="corrChart" fx:id="modeChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="9.0" layoutY="283.0" legendVisible="false" prefHeight="205.0" prefWidth="576.0" title="Mode Amplitude vs. Time" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+    <LineChart fx:id="modeChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="12.0" layoutY="393.0" legendVisible="false" prefHeight="205.0" prefWidth="576.0" title="Mode Amplitude vs. Time" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
       <xAxis>
         <NumberAxis id="xAxis1" label="Time" prefHeight="35.999900000002526" prefWidth="511.0" side="BOTTOM" />
       </xAxis>
@@ -18,13 +18,21 @@
         <NumberAxis id="yAxis1" label="Amplitude" prefHeight="125.0" prefWidth="57.0" side="LEFT" upperBound="1.0" />
       </yAxis>
     </LineChart>
-    <Slider id="sliderHorizontal1" fx:id="modeSlider" blockIncrement="1.0" layoutX="41.0" layoutY="488.0" majorTickUnit="1.0" minorTickCount="0" prefWidth="530.0" showTickLabels="true" snapToTicks="true" />
-    <LineChart id="modeChart" fx:id="corrChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="9.0" layoutY="22.0" legendVisible="false" prefHeight="268.0" prefWidth="576.0" title="Correlation Curve" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+    <Slider id="sliderHorizontal1" fx:id="modeSlider" blockIncrement="1.0" layoutX="35.0" layoutY="607.0" majorTickUnit="1.0" minorTickCount="0" prefWidth="530.0" showTickLabels="true" snapToTicks="true" />
+    <LineChart fx:id="corrChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="9.0" layoutY="22.0" legendVisible="false" prefHeight="194.0" prefWidth="576.0" title="Correlation Curve" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
       <xAxis>
         <NumberAxis id="xAxis1" label="Time Lag (frames)" side="BOTTOM" />
       </xAxis>
       <yAxis>
         <NumberAxis id="yAxis1" animated="false" label="Coefficient" prefHeight="183.0" prefWidth="57.0" side="LEFT" upperBound="1.0" />
+      </yAxis>
+    </LineChart>
+    <LineChart fx:id="fourierChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="12.0" layoutY="205.0" legendVisible="false" prefHeight="194.0" prefWidth="576.0" title="Fourier Spectum" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+      <xAxis>
+        <NumberAxis id="xAxis1" label="Frequency (1 / frames)" side="BOTTOM" />
+      </xAxis>
+      <yAxis>
+        <NumberAxis id="yAxis1" animated="false" label="Amplitude" prefHeight="183.0" prefWidth="57.0" side="LEFT" upperBound="1.0" />
       </yAxis>
     </LineChart>
   </children>
