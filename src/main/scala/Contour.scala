@@ -23,7 +23,7 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
   def sortPoints = points = {
     val xavg = points.map(_.cartesian.x).sum / points.length
     val yavg = points.map(_.cartesian.y).sum / points.length
-    val newPoints = for(i <- points) yield pointFactory.mkCartesianPoint(i.cartesian.x - xavg, i.cartesian.y - yavg)
+    val newPoints = for(p <- points) yield pointFactory.mkCartesianPoint(p.cartesian.x - xavg, p.cartesian.y - yavg)
     newPoints.sortBy(_.polar.ang)
   }
   def avgRadius = getRadii.sum / numPoints

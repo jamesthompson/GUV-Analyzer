@@ -9,7 +9,7 @@ import javafx.scene.chart.{Axis, XYChart, NumberAxis}
  * Must be instantiated with either cartesian or polar coordinates, or both! An absolute requirement!!
  */
 
- case class CartesianPoint(x: Double, y: Double) {
+case class CartesianPoint(x: Double, y: Double) {
   def getXYData = new XYChart.Data[Number, Number](x,y)
   override def toString: String = x.toString + "\t" + y.toString
 }

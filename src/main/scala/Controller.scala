@@ -20,6 +20,7 @@ import javafx.scene.input.{Clipboard, ClipboardContent}
 import javafx.scene.layout.{AnchorPane, GridPane, VBox}
 import javafx.stage.{FileChooser, Stage}
 import jfxtras.labs.scene.control.BigDecimalField
+import scala.collection.JavaConversions._
 
 /**
  * Main app controller class
@@ -32,8 +33,9 @@ class Controller extends Initializable {
 
 	// ----| Fields
 
-	private var rsrcs : ResourceBundle = null
 	lazy val datasets : ObservableList[GUV] = FXCollections.observableArrayList()
+
+	private var rsrcs : ResourceBundle = null
 	private var series : XYChart.Series[Number, Number] = null
 	private var devSeries : XYChart.Series[Number, Number] = null
 	private var presentFrame : Int = 0
@@ -195,7 +197,7 @@ class Controller extends Initializable {
 	}
 
 	private def createSeries : XYChart.Series[Number, Number] = {
-		val guv : GUV = listView.getSelectionModel.getSelectedItem
+		val guv = listView.getSelectionModel.getSelectedItem
 		frameSlider.setMax(guv.contours.size - 1)
 		val scale = guv.calcScale
 		XAxis.setLowerBound((-scale * 1.1).toInt - 1)
@@ -208,7 +210,7 @@ class Controller extends Initializable {
 	private def createDevSeries : XYChart.Series[Number, Number] = listView.getSelectionModel.getSelectedItem.getFrameDeviationChart(0)
 
 	def updateGraph(frameNumber : Int) {
-		val guv : GUV = listView.getSelectionModel.getSelectedItem
+		val guv = listView.getSelectionModel.getSelectedItem
 		lineChart.getData.remove(series)
 		deviationChart.getData.remove(devSeries)
 		presentFrame = frameNumber
@@ -220,8 +222,8 @@ class Controller extends Initializable {
 
 	def copyCartesianPoints(event : ActionEvent) {
 		println("Cartesian Points on Clipboard")
-		val clipboard : Clipboard = Clipboard.getSystemClipboard
-		val content : ClipboardContent = new ClipboardContent
+		val clipboard = Clipboard.getSystemClipboard
+		val content = new ClipboardContent
 		if (listView.getSelectionModel.isEmpty == false) {
 			content.putString(listView.getSelectionModel.getSelectedItem.getContour(presentFrame).toCartString)
 			clipboard.setContent(content)
@@ -230,8 +232,8 @@ class Controller extends Initializable {
 
 	def copyPolarPoints(event : ActionEvent) {
 		println("Polar Points on Clipboard")
-		val clipboard : Clipboard = Clipboard.getSystemClipboard
-		val content : ClipboardContent = new ClipboardContent
+		val clipboard = Clipboard.getSystemClipboard
+		val content = new ClipboardContent
 		if (listView.getSelectionModel.isEmpty == false) {
 			content.putString(listView.getSelectionModel.getSelectedItem.getContour(presentFrame).toString)
 			clipboard.setContent(content)
@@ -241,17 +243,15 @@ class Controller extends Initializable {
 	// ----| File Handling
 
 	def saveGUV(event : ActionEvent) {
-		val fc : FileChooser = new FileChooser
+		val fc = new FileChooser
 		fc.setInitialDirectory(new File("/Users/James/Desktop/"))
-		val file : File = fc.showSaveDialog(mainAnchorPane.sceneProperty.get.getWindow)
-		val task : Task[_] = new Task[Void] {
+		val file = fc.showSaveDialog(mainAnchorPane.sceneProperty.get.getWindow)
+		val task = new Task[Void] {
 			protected def call : Void = {
-				val guv : GUV = listView.getSelectionModel.getSelectedItem
-				var fos : FileOutputStream = null
-				var out : ObjectOutputStream = null
+				val guv = listView.getSelectionModel.getSelectedItem
 				try {
-					fos = new FileOutputStream(file.getPath + guv.toString + ".guv")
-					out = new ObjectOutputStream(fos)
+					val fos = new FileOutputStream(file.getPath + guv.toString + ".guv")
+					val out = new ObjectOutputStream(fos)
 					out.writeObject(guv)
 					out.close
 				}
@@ -262,22 +262,19 @@ class Controller extends Initializable {
 				null
 			}
 		}
-		val loadThread : Thread = new Thread(task)
+		val loadThread = new Thread(task)
 		loadThread.start
 	}
 
 	def saveAllGUVs(event : ActionEvent) {
-		val fc : FileChooser = new FileChooser
-		val file : File = fc.showSaveDialog(mainAnchorPane.sceneProperty.get.getWindow)
-		val task : Task[_] = new Task[Void] {
-			protected def call : Void = {
-				import scala.collection.JavaConversions._
+		val fc = new FileChooser
+		val file = fc.showSaveDialog(mainAnchorPane.sceneProperty.get.getWindow)
+		val task = new Task[Void] {
+			protected def call = {
 				for(guv <- datasets) {
-					var fos : FileOutputStream = null
-					var out : ObjectOutputStream = null
 					try {
-						fos = new FileOutputStream(file.getPath + guv.toString + ".guv")
-						out = new ObjectOutputStream(fos)
+						val fos = new FileOutputStream(file.getPath + guv.toString + ".guv")
+						val out = new ObjectOutputStream(fos)
 						out.writeObject(guv)
 						out.close
 					}
@@ -289,26 +286,23 @@ class Controller extends Initializable {
 				null
 			}
 		}
-		val loadThread : Thread = new Thread(task)
+		val loadThread = new Thread(task)
 		loadThread.start
 	}
 
 	def loadGUVs(event : ActionEvent) {
-		val fc : FileChooser = new FileChooser
-		val extension : FileChooser.ExtensionFilter = new FileChooser.ExtensionFilter("GUV files (*.guv)", "*.guv")
+		val fc = new FileChooser
+		val extension = new FileChooser.ExtensionFilter("GUV files (*.guv)", "*.guv")
 		fc.getExtensionFilters.add(extension)
 		fc.setInitialDirectory(new File("/Users/James/Desktop/"))
-		val list : List[File] = fc.showOpenMultipleDialog(mainAnchorPane.sceneProperty.get.getWindow)
-		val task : Task[_] = new Task[Void] {
+		val list = fc.showOpenMultipleDialog(mainAnchorPane.sceneProperty.get.getWindow)
+		val task = new Task[Void] {
 			protected def call : Void = {
-				import scala.collection.JavaConversions._
 				for(file <- list) {
-					var guv : GUV = null
-					var fis : FileInputStream = null
-					var in : ObjectInputStream = null
+					var guv : GUV = null // Horrible mutable state! Will figure out how to fix later!! I promise!
 					try {
-						fis = new FileInputStream(file)
-						in = new ObjectInputStream(fis)
+						val fis = new FileInputStream(file)
+						val in = new ObjectInputStream(fis)
 						guv = in.readObject.asInstanceOf[GUV]
 						in.close
 					}
@@ -321,14 +315,19 @@ class Controller extends Initializable {
 				null
 			}
 		}
-		val loadThread : Thread = new Thread(task)
+		val loadThread = new Thread(task)
 		loadThread.start
 	}
 
 	def deleteGUV(event : ActionEvent) {
-		datasets.remove(listView.getSelectionModel.getSelectedItem)
-		lineChart.getData.remove(series)
-		deviationChart.getData.remove(devSeries)
+		datasets.isEmpty match {
+			case true => ()
+			case false => {
+				datasets.remove(listView.getSelectionModel.getSelectedItem)
+				lineChart.getData.remove(series)
+				deviationChart.getData.remove(devSeries)
+			}
+		}		
 	}
 
 	// ----| Image Importer Loader
@@ -348,23 +347,18 @@ class Controller extends Initializable {
 	// ----| Correlations Loader
 
 	def corrLoad(event : ActionEvent) {
-		if (datasets.isEmpty) {
-			try {
-				warn("Please load an image, detect the edge contours and expand shape in terms of spherical harmonics, or a saved GUV file first!")
-			}
-			catch {
-				case meltdown : Exception => {
+		datasets.isEmpty match {
+			case true => warn("Please load an image, detect the edge contours and expand shape in terms of spherical harmonics, or load a saved and processed GUV file first!")
+			case false => {
+				try {
+					val corr : CorrelationsController = FXMLFactory.loadFXMLClass("/CorrelationsStage.fxml", "Correlations").asInstanceOf[CorrelationsController]
+					corr.guvTransfer(listView.getSelectionModel.getSelectedItem)
 				}
-			}
-			return
-		}
-		try {
-			val corr : CorrelationsController = FXMLFactory.loadFXMLClass("/CorrelationsStage.fxml", "Correlations").asInstanceOf[CorrelationsController]
-			corr.guvTransfer(listView.getSelectionModel.getSelectedItem)
-		}
-		catch {
-			case ex : Exception => {
-				Logger.getLogger(classOf[Launch].getName).log(Level.SEVERE, null, ex)
+				catch {
+					case ex : Exception => {
+						Logger.getLogger(classOf[Launch].getName).log(Level.SEVERE, null, ex)
+					}
+				}
 			}
 		}
 	}
@@ -372,34 +366,29 @@ class Controller extends Initializable {
 	// ----| Spherical Harmonics Loader
 
 	def launchSphericalAnalysis(event : ActionEvent) {
-		if (datasets.isEmpty) {
-			try {
-				warn("Please load an image and detect the edge contours, or a saved GUV file first!")
-			}
-			catch {
-				case meltdown : Exception => {
+		datasets.isEmpty match {
+			case true => warn("Please load an image and detect the edge contours, or a saved GUV file first!")
+			case false => {
+				try {
+					if (listView.getSelectionModel.getSelectedItem.getContour(0).sphericalHarmonicAmplitudes != null) {
+						val sphALoad : SphericalAnalysisController = FXMLFactory.loadFXMLClass("/SphericalStage.fxml", "Spherical Harmonics Analysis").asInstanceOf[SphericalAnalysisController]
+						sphALoad.setData(listView.getSelectionModel.getSelectedItem)
+					}
+					else try {
+						warn("Please run the Legendre decomposition first!")
+					}
+					catch {
+						case meltdown : Exception => {
+						}
+					}
+				}
+				catch {
+					case ex : Exception => {
+						Logger.getLogger(classOf[Launch].getName).log(Level.SEVERE, null, ex)
+					}
 				}
 			}
-			return
-		}
-		try {
-			if (listView.getSelectionModel.getSelectedItem.getContour(0).sphericalHarmonicAmplitudes != null) {
-				val sphALoad : SphericalAnalysisController = FXMLFactory.loadFXMLClass("/SphericalStage.fxml", "Spherical Harmonics Analysis").asInstanceOf[SphericalAnalysisController]
-				sphALoad.setData(listView.getSelectionModel.getSelectedItem)
-			}
-			else try {
-				warn("Please run the Legendre decomposition first!")
-			}
-			catch {
-				case meltdown : Exception => {
-				}
-			}
-		}
-		catch {
-			case ex : Exception => {
-				Logger.getLogger(classOf[Launch].getName).log(Level.SEVERE, null, ex)
-			}
-		}
+		}	
 	}
 
 	// ----| Warning Dialog Loader
