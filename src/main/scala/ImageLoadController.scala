@@ -59,6 +59,8 @@ class ImageLoadController extends Initializable {
 
 	// Functions
 
+	implicit def conIntToByte(in:Array[Int]) : Array[Byte] = in.map(_.toByte)
+
 	def initialize(arg0 : URL, arg1 : ResourceBundle) {
 		println(this.getClass.getSimpleName + ".initialize")
 		makeControllers
@@ -77,40 +79,30 @@ class ImageLoadController extends Initializable {
 		pixelStack = load.get._1
 		frameSlider.setValue(0)
 		frameSlider.setMax(pixelStack.size - 1)
-		val util : ImageUtils = new ImageUtils
 		width = load.get._2
 		height = load.get._3
-		imagePreview.setImage(util.getJavaFXImage(pixelStack(0), width, height))
-		val cd : CannyDeriche = new CannyDeriche(pixelStack(0), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(util.getJavaFXImage(util.convertIntArrayToByteArray(cd.getFilteredImage), width, height))
+		imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(0), width, height))
+		val cd = new CannyDeriche(pixelStack(0), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
+		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 		visualizeControllers
 		toolBar.getItems.remove(chooseButton)
 	}
 
-	private def updatePreviewImage(frame : Int) {
-		val util : ImageUtils = new ImageUtils
-		imagePreview.setImage(util.getJavaFXImage(pixelStack(frame), width, height))
-	}
+	private def updatePreviewImage(frame : Int) = imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(frame), width, height))
 
 	def updateCD(event : ActionEvent) {
-		val frame : Int = frameSlider.getValue.asInstanceOf[Int]
-		val util : ImageUtils = new ImageUtils
-		val cd : CannyDeriche = new CannyDeriche(pixelStack(frame), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(util.getJavaFXImage(util.convertIntArrayToByteArray(cd.getFilteredImage), width, height))
+		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
+		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 	}
 
 	def updateCD {
-		val frame : Int = frameSlider.getValue.asInstanceOf[Int]
-		val util : ImageUtils = new ImageUtils
-		val cd : CannyDeriche = new CannyDeriche(pixelStack(frame), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(util.getJavaFXImage(util.convertIntArrayToByteArray(cd.getFilteredImage), width, height))
+		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
+		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 	}
 
 	private def updateCDSliders {
-		val frame : Int = frameSlider.getValue.asInstanceOf[Int]
-		val util : ImageUtils = new ImageUtils
-		val cd : CannyDeriche = new CannyDeriche(pixelStack(frame), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(util.getJavaFXImage(util.convertIntArrayToByteArray(cd.getFilteredImage), width, height))
+		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
+		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 	}
 
 	def readied(event : ActionEvent) {
