@@ -24,7 +24,7 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
   def getFrameDeviationChart(index:Int) = contours(index).getDeviationSeries
 
   def calcSphericalHarmonics(numModes:Int, baseShapeRadius:Double) = {    // THIS METHOD RESCALES THE CONTOUR TO THE AVERAGE RADIUS...i.e. Zeroth 'Fourier' Mode
-      val scaledContours = contours.map(c => c.points.map((p:Point) => pointFactory.mkPolarPoint(p.polar.getAng, p.polar.getRad / baseShapeRadius)))
+      val scaledContours = contours.map(c => c.points.map((p:Point) => pointFactory.mkPolarPoint(p.polar.ang, p.polar.rad / baseShapeRadius)))
       contours.par.map(c => c.calcSpherical(scaledContours(contours.indexOf(c)), numModes, 1)) // pass the rescaled to R contours.
   }
 

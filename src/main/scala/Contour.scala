@@ -16,25 +16,25 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
   def addPoint(p:Point) = points = points.+:(p)
   def getPoint(index:Int) = points.apply(index)
   def numPoints = points.size
-  def getRadii = points.map(_.polar.getRad).toArray
+  def getRadii = points.map(_.polar.rad).toArray
 
-	def getMaxRadius = points.map(_.polar.getRad).max
+	def getMaxRadius = points.map(_.polar.rad).max
 
   def sortPoints = points = {
-    val xavg = points.map(_.cartesian.getX).sum / points.length
-    val yavg = points.map(_.cartesian.getY).sum / points.length
-    val newPoints = for(i <- points) yield pointFactory.mkCartesianPoint(i.cartesian.getX - xavg, i.cartesian.getY - yavg)
-    newPoints.sortBy(_.polar.getAng)
+    val xavg = points.map(_.cartesian.x).sum / points.length
+    val yavg = points.map(_.cartesian.y).sum / points.length
+    val newPoints = for(i <- points) yield pointFactory.mkCartesianPoint(i.cartesian.x - xavg, i.cartesian.y - yavg)
+    newPoints.sortBy(_.polar.ang)
   }
   def avgRadius = getRadii.sum / numPoints
   def stDev = {
     val avg = avgRadius
-    math.sqrt(points.map(_.polar.getRad).map((r:Double) => contourMath.sqr(r - avg)).sum / numPoints)
+    math.sqrt(points.map(_.polar.rad).map((r:Double) => contourMath.sqr(r - avg)).sum / numPoints)
   }
   def filter(multiplesOfStDev:Double) = {
     val avg = avgRadius
     val sdev = stDev
-    points = points.filter((p:Point) => p.polar.getRad <= avg + sdev*multiplesOfStDev && p.polar.getRad >= avg - sdev*multiplesOfStDev)
+    points = points.filter((p:Point) => p.polar.rad <= avg + sdev*multiplesOfStDev && p.polar.rad >= avg - sdev*multiplesOfStDev)
   }
   def killPoint(index:Int) = (points take index) ++ (points drop (index + 1))
   def getSeries(scaleSize:Double) = {
@@ -51,9 +51,9 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
 
   // Calculates the spherical harmonic amplitudes for this contour for the given precision (number of modes) and the desired baseShapeRadius.
   def calcSpherical(pointsIn:IndexedSeq[Point], modeNum:Int, baseShapeRadius:Double) = {
-    val make180 = pointsIn.filter((p:Point) => p.polar.getAng > 0 && p.polar.getAng < math.Pi)
-    val polynomials : IndexedSeq[IndexedSeq[Double]] = for(p <- make180) yield Legendre.leg(modeNum, p.polar.getAng) // Calc all the polynums first (instead of having to reiterate again and again)
-    def doIntegrand(l:Int) = make180.map((p:Point) => (p.polar.getRad - baseShapeRadius) * polynomials.apply(make180.indexOf(p)).apply(l) * math.sin(p.polar.getAng) * 2*(l.toDouble+1)/2).sum * math.Pi/make180.length
+    val make180 = pointsIn.filter((p:Point) => p.polar.ang > 0 && p.polar.ang < math.Pi)
+    val polynomials : IndexedSeq[IndexedSeq[Double]] = for(p <- make180) yield Legendre.leg(modeNum, p.polar.ang) // Calc all the polynums first (instead of having to reiterate again and again)
+    def doIntegrand(l:Int) = make180.map((p:Point) => (p.polar.rad - baseShapeRadius) * polynomials.apply(make180.indexOf(p)).apply(l) * math.sin(p.polar.ang) * 2*(l.toDouble+1)/2).sum * math.Pi/make180.length
     sphericalHarmonicAmplitudes = for(l <- 0 to modeNum) yield doIntegrand(l)
   }
 
