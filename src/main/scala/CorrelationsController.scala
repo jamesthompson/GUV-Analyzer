@@ -43,6 +43,7 @@ class CorrelationsController extends Initializable {
 					plotFourier(arg2.intValue)
 			}
 		})
+		modeSlider.setSnapToTicks(true)
 	}
 
 	def guvTransfer(in:GUV) {

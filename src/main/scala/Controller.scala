@@ -65,7 +65,7 @@ class Controller extends Initializable {
 
 	// ----| Initialization
 
-	def initialize(arg0 : URL, arg1 : ResourceBundle) {
+	def initialize(arg0:URL, arg1:ResourceBundle) {
 		this.rsrcs = arg1
 		println(this.getClass.getSimpleName + ".initialize")
 		listView.setItems(datasets)
@@ -126,6 +126,28 @@ class Controller extends Initializable {
 		simulationService.start
 	}
 
+
+
+	private def buildRightHandSide {
+		root = new GridPane
+		root.setHgap(0)
+		root.setVgap(0)
+		personField = new TextField
+		personField.setEditable(false)
+		dateField = new TextField
+		dateField.setEditable(false)
+		averageRadiusField = new TextField
+		averageRadiusField.setEditable(false)
+		pixelField = new TextField
+		pixelField.setEditable(false)
+		timeField = new TextField
+		timeField.setEditable(false)
+	}
+
+	// ----| Event Handling
+
+	def exitApp(event : ActionEvent) = ()
+
 	def runLegendre(event : ActionEvent) {
 		listView.getSelectionModel.isEmpty match {
 			case true => warn("Please load a dataset and get harmonics first!"); ()
@@ -160,26 +182,6 @@ class Controller extends Initializable {
 			sphericalService.start
 		}
 	}
-
-	private def buildRightHandSide {
-		root = new GridPane
-		root.setHgap(0)
-		root.setVgap(0)
-		personField = new TextField
-		personField.setEditable(false)
-		dateField = new TextField
-		dateField.setEditable(false)
-		averageRadiusField = new TextField
-		averageRadiusField.setEditable(false)
-		pixelField = new TextField
-		pixelField.setEditable(false)
-		timeField = new TextField
-		timeField.setEditable(false)
-	}
-
-	// ----| Event Handling
-
-	def exitApp(event : ActionEvent) = ()
 
 	def vesicleSelectionChanged(event : Event) {
 		listView.getSelectionModel.isEmpty match {
