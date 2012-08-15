@@ -79,5 +79,5 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
 
 	def calcScale : Double = contours.map(c => c.getMaxRadius).max
 
-   override def toString = name.dropRight(4)
+  override def toString = name.dropRight(4)
 }
