@@ -18,6 +18,7 @@ import javafx.stage.FileChooser
 import javafx.util.Duration
 import jfxtras.labs.scene.control.gauge._
 import javafx.scene.control
+import scala.math._
 
 /**
 * Image loading controller
@@ -86,19 +87,18 @@ class ImageLoadController extends Initializable {
 		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 		visualizeControllers
 		toolBar.getItems.remove(chooseButton)
-		val ef = new EdgeFinder(pixelStack(0), width, height)
+		//val ef = new EdgeFinder(pixelStack(0), width, height)
 		println("\n\nPolar Image : \n\n")
 		// val calc = ef.convImgToPolar
-		// println(calc._1.map(_.mkString("\t")).mkString("\n"))
-		
-		
+		// println(calc._1.map(_.mkString("\t")).mkString("\n"))		
 		//println(ef.convImgToPolar.map(_.mkString("\t"))mkString("\n"))
-		val a = ef.convImgToPolar
-		val imgPolar = a.map(_._1)
-		val imgEdge = a.map(_._2)
-		println(imgPolar.map(_.mkString("\t")).mkString("\n"))
-		println("\n\n\n\n EDGE \n\n\n\n")
-		println(imgEdge.mkString("\n"))
+		// val a = ef.convImgToPolar(360, 10, 5.0)
+		// val imgPolar = a.map(_._1)
+		// val imgEdge = a.map(_._2)
+		// //println(imgPolar.map(_.mkString("\t")).mkString("\n"))
+		// println("\n\n\n\n EDGE \n\n\n\n")
+		// println(imgEdge.mkString("\n"))val ef = new EdgeFinder(pixelStack(0), width, height)
+		//println(ef.convImgToPolar(360, 10, 5.0).map(_._2).mkString("\n"))
 	}
 
 	private def updatePreviewImage(frame : Int) = imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(frame), width, height))
@@ -135,11 +135,9 @@ class ImageLoadController extends Initializable {
 						implicit def conv1Dto2D(loc:Int) : (Int,Int) = (loc % width, math.floor(loc / width).toInt)
 						implicit def conv2Dto1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
 						for(array <- pixelStack) {
-							val cd : CannyDeriche = new CannyDeriche(array, width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-							val filteredArray : Array[Int] = cd.getFilteredImage
-							val cont : Contour = new Contour
-							val locs = for(i <- 0 until width; j <- 0 until height if(filteredArray((i,j)) == 255)) yield (i,j)
-							locs.map(l => cont.addPoint(pointFactory.mkCartesianPoint(l._1 * 0.1892, l._2 * 0.1892)))
+							val ef = new EdgeFinder(array, width, height)
+							val calc = ef.convImgToPolar(360, 10, 10.0)
+							val cont = new Contour(calc)
 							cont.sortPoints
 							updateProgress(pixelStack.indexOf(array), pixelStack.size - 1)
 							guv.addContour(cont)

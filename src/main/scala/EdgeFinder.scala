@@ -2,6 +2,15 @@ package com.jamesrthompson.Data
 
 import scala.math._
 
+case class PolarLocation(x:Double, y:Double) {
+  def getPoint(numAngles:Double) : Point = {
+    val angle = y * (2*Pi/numAngles)
+    val xloc = x * cos(angle) 
+    val yloc = x * sin(angle)
+    pointFactory.mkCartesianPoint(xloc * 0.1892, yloc * 0.1892)
+  }
+}
+
 class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
 
 	implicit def normalize(in:Array[Byte]) : Array[Double] = {
@@ -10,8 +19,6 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
     val min = shifted.min.toDouble
     shifted.map(s => (s.toDouble - min) * (1 / (max - min)))
   }
-
-  implicit def conv2DTo1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
 
   lazy val img : Array[Double] = i
 
@@ -34,8 +41,7 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
   	out.toList
  	}
 
- 	def convImgToPolar : List[(List[Double], Double)] = {
- 		val angleLines = 360
+ 	def convImgToPolar(angleLines:Int, windowSize:Int, thresholdPercent:Double) : IndexedSeq[Point] = {
  		val widthInitial = width
  		val heightInitial = height
  		val centerX = width / 2
@@ -51,26 +57,26 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
  			tempRad
  		}
  		val radius = getRad.toInt
- 		def getInterpolatedPixel(x:Double, y:Double) = {
- 			var xtemp = x
- 			var ytemp = y
- 			if(xtemp < 0.0) xtemp = 0.0
- 			if(xtemp >= width - 1.0) xtemp = width - 1.001
- 			if(ytemp < 0.0) ytemp = 0.0
- 			if(ytemp >= height - 1.0) ytemp = height - 1.001 
- 			val xbase = xtemp.toInt
- 			val ybase = ytemp.toInt
- 			val xFraction : Double = xtemp - xbase
- 			val yFraction : Double = ytemp - ybase
- 			val offset = ybase * width + xbase
- 			val lowerLeft = img(offset)
- 			val lowerRight = img(offset + 1)
- 			val upperRight = img(offset + width + 1)
- 			val upperLeft = img(offset + width)
- 			val upperAverage = upperLeft + xFraction * (upperRight - upperLeft)
- 			val lowerAverage = lowerLeft + xFraction * (lowerRight - lowerLeft)
- 			lowerAverage + yFraction * (upperAverage - lowerAverage)
- 		}
+    def getInterpolatedPixel(x:Double, y:Double) = {
+      var xtemp = x
+      var ytemp = y
+      if(xtemp < 0.0) xtemp = 0.0
+      if(xtemp >= width - 1.0) xtemp = width - 1.001
+      if(ytemp < 0.0) ytemp = 0.0
+      if(ytemp >= height - 1.0) ytemp = height - 1.001 
+      val xbase = xtemp.toInt
+      val ybase = ytemp.toInt
+      val xFraction : Double = xtemp - xbase
+      val yFraction : Double = ytemp - ybase
+      val offset = ybase * width + xbase
+      val lowerLeft = img(offset)
+      val lowerRight = img(offset + 1)
+      val upperRight = img(offset + width + 1)
+      val upperLeft = img(offset + width)
+      val upperAverage = upperLeft + xFraction * (upperRight - upperLeft)
+      val lowerAverage = lowerLeft + xFraction * (lowerRight - lowerLeft)
+      lowerAverage + yFraction * (upperAverage - lowerAverage)
+    }
     var movingAvg = 0.0
  		val out = for(yy <- 0 until angleLines) yield {
  			val arr = for(xx <- 0 until radius) yield {
@@ -80,26 +86,23 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
  				val y = r * sin(angle) + centerY
  				getInterpolatedPixel(x, y)
  			}
- 			// val cd = for(n <- 1 until arr.length - 1) yield (arr(n+1) - arr(n)) - (arr(n-1) - arr(n)) // Central difference 
- 			// cd.indexOf(cd.max)
- 			val ck = ckf(arr.toList, 10)
- 			// val d = ck.sum
- 			// ck.zipWithIndex.map(v => v._1 * v._2).sum / d
-      val value = ck.indexOf(ck.max).toDouble + 10 // Need to add the windowSize from the CKF filter
-      val maxRange = value * 0.05 // 5 % threshold
+ 			val ck = ckf(arr.toList, windowSize)
+      val value = ck.indexOf(ck.max).toDouble + windowSize // Need to add the windowSize from the CKF filter
+      val maxRange = value * (thresholdPercent / 100.0)
       if(yy < 1) {
         value
         movingAvg += value
-        (arr.toList, value)
+        (arr.toList, PolarLocation(value, yy.toDouble))
       } else if(value > movingAvg + maxRange || value < movingAvg - maxRange) {
-        (arr.toList, movingAvg)
+        (arr.toList, PolarLocation(movingAvg, yy.toDouble))
       } else {
         movingAvg += value
         movingAvg = movingAvg / 2
-        (arr.toList, movingAvg) // Alternatively output the 'value'
+        (arr.toList, PolarLocation(movingAvg, yy.toDouble))
       }
  		}
-    out.toList
+    val pointLocs = out.map(_._2)
+    pointLocs.map(_.getPoint(angleLines.toDouble)).toIndexedSeq
  	}
 
 }
