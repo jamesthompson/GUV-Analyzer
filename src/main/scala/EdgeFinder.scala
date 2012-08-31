@@ -11,9 +11,7 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
     shifted.map(s => (s.toDouble - min) * (1 / (max - min)))
   }
 
-  implicit def conv2DTo1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
-
-  lazy val img : Array[Double] = i
+ 	lazy val img : Array[Double] = i
 
  	def calcStDev(in: List[Double]) = {
     def squaredDifference(v1:Double, v2:Double) = pow(v1 - v2,2.0)
