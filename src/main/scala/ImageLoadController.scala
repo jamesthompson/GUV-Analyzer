@@ -14,11 +14,15 @@ import javafx.geometry.Orientation
 import javafx.scene.control._
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{AnchorPane, VBox}
+import javafx.scene.Group
+import javafx.scene.paint.Color
+import javafx.scene.shape._
 import javafx.stage.FileChooser
 import javafx.util.Duration
 import jfxtras.labs.scene.control.gauge._
 import javafx.scene.control
 import scala.math._
+import javafx.scene.shape.Path
 
 /**
 * Image loading controller
@@ -26,6 +30,8 @@ import scala.math._
 * @since Jun 5, 2012
 * Malmstadt Lab - Mork Family Dept. Chem. Eng. & Mat. Sci. - University of Southern California
 */
+
+case class JFXImg(bytes:Array[Byte], width:Int, height:Int)
 
 class ImageLoadController extends Initializable {
 
@@ -36,15 +42,17 @@ class ImageLoadController extends Initializable {
 	private var height : Int = 0
 	private var readyft : FadeTransition = null
 	private var guvList : ObservableList[GUV] = null
+	private var edgeGroup : Group = new Group
 	@FXML private[Controllers] var imageLoadAnchorPane : AnchorPane = null
 	@FXML private[Controllers] var progressBar : ProgressBar = null
 	@FXML private[Controllers] var imagePreview : ImageView = null
-	@FXML private[Controllers] var cdPreview : ImageView = null
+	@FXML private[Controllers] var ckfPreview : ImageView = null
 	@FXML private[Controllers] var frameSlider : Slider = null
 	@FXML private[Controllers] var edgePreviewButton : CheckBox = null
 	@FXML private[Controllers] var chooseButton : Button = null
 	@FXML private[Controllers] var readyButton : Button = null
 	@FXML private[Controllers] var controllerBox : VBox = null
+	@FXML private[Controllers] var imageBox : VBox = null
 	@FXML private[Controllers] var toolBar : ToolBar = null
 	@FXML private[Controllers] var pixelScaleBox : ChoiceBox[_] = null
 	@FXML private[Controllers] var fpsField : TextField = null
@@ -60,11 +68,10 @@ class ImageLoadController extends Initializable {
 
 	// Functions
 
-	implicit def conIntToByte(in:Array[Int]) : Array[Byte] = in.map(_.toByte)
-
 	def initialize(arg0 : URL, arg1 : ResourceBundle) {
 		println(this.getClass.getSimpleName + ".initialize")
 		makeControllers
+		imageLoadAnchorPane.getChildren.add(edgeGroup)
 	}
 
 	def transferGUVList(guvList : ObservableList[GUV]) {
@@ -83,39 +90,44 @@ class ImageLoadController extends Initializable {
 		width = load.get._2
 		height = load.get._3
 		imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(0), width, height))
-		val cd = new CannyDeriche(pixelStack(0), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 		visualizeControllers
 		toolBar.getItems.remove(chooseButton)
-		//val ef = new EdgeFinder(pixelStack(0), width, height)
-		println("\n\nPolar Image : \n\n")
-		// val calc = ef.convImgToPolar
-		// println(calc._1.map(_.mkString("\t")).mkString("\n"))		
-		//println(ef.convImgToPolar.map(_.mkString("\t"))mkString("\n"))
-		// val a = ef.convImgToPolar(360, 10, 5.0)
-		// val imgPolar = a.map(_._1)
-		// val imgEdge = a.map(_._2)
-		// //println(imgPolar.map(_.mkString("\t")).mkString("\n"))
-		// println("\n\n\n\n EDGE \n\n\n\n")
-		// println(imgEdge.mkString("\n"))val ef = new EdgeFinder(pixelStack(0), width, height)
-		//println(ef.convImgToPolar(360, 10, 5.0).map(_._2).mkString("\n"))
 	}
 
 	private def updatePreviewImage(frame : Int) = imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(frame), width, height))
 
-	def updateCD(event : ActionEvent) {
-		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
+	def updateEdge(frame:Int) {
+		val ef = new EdgeFinder(pixelStack(frame), width, height)
+		val calc = ef.convImgToPolar(360, 10, 3.0) // manual for now, must link up to slider params
+		val edgeLocation = calc.map(_._2) // link up to slider params
+		val ckfImage = getByteArrayFromCKF(calc.map(_._1))
+		val jfxCKF = JFXImageUtil.getJavaFXImage(ckfImage.bytes, ckfImage.width, ckfImage.height)
+		ckfPreview.setImage(jfxCKF)
+		updateDrawEdge(edgeLocation, ckfImage.width, ckfImage.height)
 	}
 
-	def updateCD {
-		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
+	def updateDrawEdge(location:List[PolarLocation], width:Int, height:Int) {
+		edgeGroup.getChildren.removeAll(edgeGroup.getChildren)
+		val xscale = ckfPreview.getFitWidth / width
+		val yscale = ckfPreview.getFitHeight / height
+		val path = new Path
+		path.setStroke(Color.RED)
+    path.setStrokeWidth(1.0)
+    path.setOpacity(1.0)
+    path.getElements().add(new MoveTo(imageBox.getLayoutX + (location(0).x + 0.5) * xscale, imageBox.getLayoutY + (location(0).y + 0.5) * yscale))
+    location.filter(location.indexOf(_) != 0).map(p => path.getElements().add(new LineTo(imageBox.getLayoutX + (p.x + 0.5) * xscale, imageBox.getLayoutY + (p.y + 0.5) * yscale)))
+		edgeGroup.getChildren.add(path)
 	}
 
-	private def updateCDSliders {
-		val cd = new CannyDeriche(pixelStack(frameSlider.getValue.toInt), width, height, radiusLcd.getValue.toInt, alphaLcd.getValue, upperLcd.getValue, lowerLcd.getValue)
-		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
+	def getByteArrayFromCKF(in:List[List[Double]]) : JFXImg = { 
+		val out = new Array[Byte](in.flatten.length)
+		val width = in(0).length
+		implicit def conv2DTo1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
+		val flatin = in.flatten
+		val minD = flatin.min
+		val maxD = flatin.max
+		for(i <- 0 until in.length; j <- 0 until width) out((j,i)) = normalizeDoubleToByte(in(i)(j), minD, maxD) // works
+		JFXImg(out, width, in.length)
 	}
 
 	def readied(event : ActionEvent) {
@@ -123,6 +135,11 @@ class ImageLoadController extends Initializable {
 		readyButton.setOpacity(1.0)
 		readyButton.setText("Importing...")
 		doImport
+	}
+
+	def normalizeDoubleToByte(in:Double, min:Double, max:Double) : Byte = {
+		val out = ((255 / (max - min)) * in) - ((min * 255) / (max - min))
+		out.toByte
 	}
 
 	private def doImport {
@@ -137,7 +154,7 @@ class ImageLoadController extends Initializable {
 						for(array <- pixelStack) {
 							val ef = new EdgeFinder(array, width, height)
 							val calc = ef.convImgToPolar(360, 10, 10.0)
-							val cont = new Contour(calc)
+							val cont = new Contour(ef.getPoints(calc))
 							cont.sortPoints
 							updateProgress(pixelStack.indexOf(array), pixelStack.size - 1)
 							guv.addContour(cont)
@@ -199,7 +216,7 @@ class ImageLoadController extends Initializable {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null && edgePreviewButton.isSelected) {
 					updatePreviewImage(arg2.intValue)
-					updateCD
+					updateEdge(arg2.intValue)
 				}
 				else if (pixelStack != null) {
 					updatePreviewImage(arg2.intValue)
@@ -210,7 +227,6 @@ class ImageLoadController extends Initializable {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
 					radiusLcd.setValue(arg2.doubleValue)
-					updateCDSliders
 				}
 			}
 		})
@@ -218,7 +234,6 @@ class ImageLoadController extends Initializable {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
 					alphaLcd.setValue(arg2.doubleValue)
-					updateCDSliders
 				}
 			}
 		})
@@ -226,7 +241,6 @@ class ImageLoadController extends Initializable {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
 					upperLcd.setValue(arg1.doubleValue)
-					updateCDSliders
 				}
 			}
 		})
@@ -234,7 +248,6 @@ class ImageLoadController extends Initializable {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
 					lowerLcd.setValue(arg1.doubleValue)
-					updateCDSliders
 				}
 			}
 		})

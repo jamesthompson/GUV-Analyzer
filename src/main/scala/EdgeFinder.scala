@@ -41,7 +41,7 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
   	out.toList
  	}
 
- 	def convImgToPolar(angleLines:Int, windowSize:Int, thresholdPercent:Double) : IndexedSeq[Point] = {
+ 	def convImgToPolar(angleLines:Int, windowSize:Int, thresholdPercent:Double) : List[(List[Double], PolarLocation)] = {
  		val widthInitial = width
  		val heightInitial = height
  		val centerX = width / 2
@@ -88,6 +88,7 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
  			}
  			val ck = ckf(arr.toList, windowSize)
       val value = ck.indexOf(ck.max).toDouble + windowSize // Need to add the windowSize from the CKF filter
+      // CHECK THAT A STRAIGHTFORWARD CENTRAL DIFFERENCE ALGORITHM ISN'T SUPERIOR TO CKF .. I SUSPECT IT MIGHT BE
       val maxRange = value * (thresholdPercent / 100.0)
       if(yy < 1) {
         value
@@ -101,8 +102,14 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
         (arr.toList, PolarLocation(movingAvg, yy.toDouble))
       }
  		}
-    val pointLocs = out.map(_._2)
-    pointLocs.map(_.getPoint(angleLines.toDouble)).toIndexedSeq
+    out.toList
+  }
+
+  def getPoints(in:List[(List[Double], PolarLocation)]) : IndexedSeq[Point] = {
+    val angleLines = in.length
+    in.map(_._2).map(_.getPoint(angleLines.toDouble)).toIndexedSeq
  	}
+
+
 
 }
