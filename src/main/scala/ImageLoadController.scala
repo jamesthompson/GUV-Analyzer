@@ -86,6 +86,19 @@ class ImageLoadController extends Initializable {
 		cdPreview.setImage(JFXImageUtil.getJavaFXImage(cd.getFilteredImage, width, height))
 		visualizeControllers
 		toolBar.getItems.remove(chooseButton)
+		val ef = new EdgeFinder(pixelStack(0), width, height)
+		println("\n\nPolar Image : \n\n")
+		// val calc = ef.convImgToPolar
+		// println(calc._1.map(_.mkString("\t")).mkString("\n"))
+		
+		
+		//println(ef.convImgToPolar.map(_.mkString("\t"))mkString("\n"))
+		val a = ef.convImgToPolar
+		val imgPolar = a.map(_._1)
+		val imgEdge = a.map(_._2)
+		println(imgPolar.map(_.mkString("\t")).mkString("\n"))
+		println("\n\n\n\n EDGE \n\n\n\n")
+		println(imgEdge.mkString("\n"))
 	}
 
 	private def updatePreviewImage(frame : Int) = imagePreview.setImage(JFXImageUtil.getJavaFXImage(pixelStack(frame), width, height))

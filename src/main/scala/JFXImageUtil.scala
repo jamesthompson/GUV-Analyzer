@@ -31,7 +31,7 @@ object JFXImageUtil {
 			val r  = new Array[Byte](256)
 			val g  = new Array[Byte](256)
 			val b  = new Array[Byte](256)
-			for(i <- 0 until 256) {
+			for(i <- 0 to 255) {
 				r(i) = i.toByte
 				g(i) = i.toByte
 				b(i) = i.toByte

@@ -27,17 +27,13 @@ class QuasiRandomSequence(rand : scala.util.Random) {
     3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413,
     3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571)
 
-  def convertToInterval(halton : Double, interval : Interval) : Double = {
-    interval.min + halton * interval.size
-  }
+  def convertToInterval(halton : Double, interval : Interval) : Double = interval.min + halton * interval.size
 
   def randomPermutation(arr : Array[Double]) : Array[Double] = {
     var l = List[Double]()
     for(i <- 0 until arr.length)
       l = l ::: List(arr(i))
-    val newArr = Array.fill(arr.length) {
-      Double.MaxValue
-    }
+    val newArr = Array.fill(arr.length) {Double.MaxValue}
     for(i <- 0 until newArr.length) {
       val randIndex = rand.nextInt(l.length)
       newArr(i) = l(randIndex)

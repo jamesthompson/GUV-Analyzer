@@ -3,7 +3,7 @@ package com.jamesrthompson.Controllers
 import javafx.fxml.{FXML, Initializable}
 import java.net.URL
 import java.util.ResourceBundle
-import com.jamesrthompson.Data.GUV
+import com.jamesrthompson.Data.{GUV, FFT}
 import javafx.scene.chart.{XYChart, LineChart}
 import javafx.scene.control.Slider
 import javafx.scene.input.MouseEvent
@@ -18,12 +18,6 @@ import scala.math._
  */
 
 class CorrelationsController extends Initializable {
-
-	case class Complex(re: Double, im: Double = 0.0) {
-    	def +(x: Complex): Complex = Complex((this.re+x.re), (this.im+x.im))
-    	def -(x: Complex): Complex = Complex((this.re-x.re), (this.im-x.im))
-    	def *(x: Complex): Complex = Complex(this.re*x.re-this.im*x.im, this.re*x.im+this.im*x.re)
-  	}
 
 	private var guv : GUV = null
 	@FXML private[Controllers] var modeChart : LineChart[Number,Number] = null
@@ -65,43 +59,10 @@ class CorrelationsController extends Initializable {
 		corrChart.getData.add(getArraySeries(out.toIndexedSeq))
 	}
 	
-	def plotFourier(mode:Int) {		
-		def padder(data:List[Complex]) : List[Complex] = {
-			def check(num:Int) : Boolean = if((num.&(num-1)) == 0) true else false
-			def pad(i:Int) : Int = {
-				check(i) match {
-					case true => i
-					case false => pad(i + 1)
-				}
-			}			
-			if(check(data.length) == true) data else data.padTo(pad(data.length), Complex(0))
-		}
-		val data = padder(modesFuncFrames(mode).map(i => Complex(i)).toList)
-		val outComplex = fft(data)
-		val outMagnitude = outComplex.map(c => math.sqrt((c.re * c.re) + (c.im * c.im))).toIndexedSeq
+	def plotFourier(mode:Int) {
+		val outMagnitude = FFT.transformReal(modesFuncFrames(mode))
 		fourierChart.getData.removeAll(fourierChart.getData)
 		fourierChart.getData.add(getArraySeries(outMagnitude))		
-	}
-
-//---| Pure Scala Cooley-Tukey FFT
-	
-	def fft(f: List[Complex]) : List[Complex] = {
-		f.length match {
-			case 0 => Nil
-			case 1 => f
-			case n => {
-				val cis: Double => Complex = phi => Complex(cos(phi),sin(phi))
-				val e = fft(f.zipWithIndex.filter(_._2%2 == 0).map(_._1))
-				val o  = fft(f.zipWithIndex.filter(_._2%2 != 0).map(_._1))
-				def calc(in:List[Complex], k:Int) : List[Complex] = {
-					k < n / 2 match {
-						case false => in
-						case true => calc(e(k) - o(k) * cis(-2 * Pi * k / n) :: (e(k) + o(k) * cis(-2 * Pi * k / n) :: in), k + 1)
-					}
-				}
-				calc(List[Complex](), 0)
-			}
-		}
 	}
 
 //---| Self-Explanatory Chart Plotting Functions

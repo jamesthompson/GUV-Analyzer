@@ -13,7 +13,7 @@ object BitBuffer {
     var store = 0
     while (bitsToRead != 0 && eof == false) {
       if (bitsToRead >= 8 - currBit) {
-        if (currBit == 0) { // special
+        if (currBit == 0) {
           store = store << 8
           val cb = byteBuffer(currByte).toInt
           cb < 0 match {
@@ -47,5 +47,4 @@ object BitBuffer {
       }
     store
   }
-
 }

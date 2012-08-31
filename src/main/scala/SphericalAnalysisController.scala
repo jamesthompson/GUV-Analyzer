@@ -46,6 +46,7 @@ class SphericalAnalysisController extends Initializable {
     frameSlider.setMin(0)
     frameSlider.setMax(guv.getSize - 1)
     msaChart.getData.add(guv.getMSASeries)
+    //msaChart.getData.add(guv.getFourierSeries)
     ampChart.getData.add(guv.getContour(0).getSHSeries)
     ampChart.setTitle("Amplitude For Frame - 1")
   }

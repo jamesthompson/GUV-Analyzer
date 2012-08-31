@@ -2,7 +2,7 @@ package com.jamesrthompson.Data
 
 import java.io.{FileInputStream, File}
 import java.util.ArrayList
-import actors.Actor
+import scala.actors.Actor
 
 /**
  * ImageLoad object - loads 8 bit or 16 bit stacked TIFFs and returns an Array[Array[Byte]] object

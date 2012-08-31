@@ -26,6 +26,7 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
   def calcSphericalHarmonics(numModes:Int, baseShapeRadius:Double) = {    // THIS METHOD RESCALES THE CONTOUR TO THE AVERAGE RADIUS...i.e. Zeroth 'Fourier' Mode
       val scaledContours = contours.map(c => c.points.map((p:Point) => pointFactory.mkPolarPoint(p.polar.ang, p.polar.rad / baseShapeRadius)))
       contours.par.map(c => c.calcSpherical(scaledContours(contours.indexOf(c)), numModes, 1)) // pass the rescaled to R contours.
+      contours.par.map(c => c.calcFourier(scaledContours(contours.indexOf(c))))
   }
 
   def calcMsa = {
@@ -49,10 +50,22 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
       series
   }
 
+  def getFourierSeries : XYChart.Series[Number, Number] = {
+    val values = contours.map(_.getFourier).reduceLeft((a,b) => (a,b).zipped map (_ + _)).map(_ / contours.length).toList.take(35).toArray
+    val series = new XYChart.Series[Number, Number]  
+    values.map((d:Double) => new XYChart.Data[Number, Number](values.indexOf(d), d)).map((np:XYChart.Data[Number,Number]) => series.getData.add(np))
+    series
+  }
+
   def makeMSAString : String = {
       val out = calcMsa
       val variance = out._2.toArray.map(sqr(_))
       "MSA = \n" + out._1.mkString("\n") + "\nStDevs = \n" + out._2.mkString("\n") + "\n\nVariance = \n" + variance.mkString("\n")
+  }
+
+  def makeFourierString : String = {
+      val out = contours.map(_.getFourier).reduceLeft((a,b) => (a,b).zipped map (_ + _)).map(_ / contours.length).toList.take(35).toArray
+      "\n\nFourier = \n\n " + out.mkString("\n")
   }
 
   def sqr(in:Double) : Double = in * in

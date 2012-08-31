@@ -70,21 +70,9 @@ public class TiffDecoder {
     private int ifdCount;
     private int[] metaDataCounts;
     private String tiffMetadata;
-
-    public TiffDecoder(String directory, String name) {
-        this.directory = directory;
-        this.name = name;
-    }
     
     public TiffDecoder(File file){
         this.file = file;
-    }
-
-    public TiffDecoder(InputStream in, String name) {
-        directory = "";
-        this.name = name;
-        url = "";
-        this.in = new RandomAccessStream(in);
     }
 
     final int getInt() throws IOException {
