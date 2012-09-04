@@ -198,6 +198,16 @@ class Controller extends Initializable {
 		}
 	}
 
+	def sortContours(event: ActionEvent) {
+		println("SortContours clicked")
+		listView.getSelectionModel.isEmpty match {
+			case true => warn("Please load a dataset first!")
+			case false => {
+				listView.getSelectionModel.getSelectedItem.contours.map(_.sortPointsByFitting)
+			}
+		}
+	}
+
 	private def createSeries : XYChart.Series[Number, Number] = {
 		val guv = listView.getSelectionModel.getSelectedItem
 		frameSlider.setMax(guv.contours.size - 1)

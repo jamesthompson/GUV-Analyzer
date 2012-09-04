@@ -56,14 +56,15 @@ class ImageLoadController extends Initializable {
 	@FXML private[Controllers] var toolBar : ToolBar = null
 	@FXML private[Controllers] var pixelScaleBox : ChoiceBox[_] = null
 	@FXML private[Controllers] var fpsField : TextField = null
-	private var radiusLcd : Lcd = null
-	private var alphaLcd : Lcd = null
-	private var upperLcd : Lcd = null
-	private var lowerLcd : Lcd = null
-	private var radiusSlider : Slider = null
-	private var alphaSlider : Slider = null
-	private var upperSlider : Slider = null
-	private var lowerSlider : Slider = null
+
+	private var anglesLCD : Lcd = null
+	private var ckLCD : Lcd = null
+	private var thresholdLCD : Lcd = null
+
+	private var anglesSlider : Slider = null
+	private var ckSlider : Slider = null
+	private var thresholdSlider : Slider = null
+
 	lazy val loaderObj = new ImageLoad
 
 	// Functions
@@ -98,8 +99,8 @@ class ImageLoadController extends Initializable {
 
 	def updateEdge(frame:Int) {
 		val ef = new EdgeFinder(pixelStack(frame), width, height)
-		val calc = ef.convImgToPolar(360, 10, 3.0) // manual for now, must link up to slider params
-		val edgeLocation = calc.map(_._2) // link up to slider params
+		val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, ckSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
+		val edgeLocation = calc.map(_._2)
 		val ckfImage = getByteArrayFromCKF(calc.map(_._1))
 		val jfxCKF = JFXImageUtil.getJavaFXImage(ckfImage.bytes, ckfImage.width, ckfImage.height)
 		ckfPreview.setImage(jfxCKF)
@@ -153,9 +154,9 @@ class ImageLoadController extends Initializable {
 						implicit def conv2Dto1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
 						for(array <- pixelStack) {
 							val ef = new EdgeFinder(array, width, height)
-							val calc = ef.convImgToPolar(360, 10, 10.0)
+							val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, ckSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
 							val cont = new Contour(ef.getPoints(calc))
-							cont.sortPoints
+							//cont.sortPoints
 							updateProgress(pixelStack.indexOf(array), pixelStack.size - 1)
 							guv.addContour(cont)
 						}
@@ -223,31 +224,24 @@ class ImageLoadController extends Initializable {
 				}
 			}
 		})
-		radiusSlider.valueProperty.addListener(new ChangeListener[Number] {
+		anglesSlider.valueProperty.addListener(new ChangeListener[Number] {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
-					radiusLcd.setValue(arg2.doubleValue)
+					anglesLCD.setValue(arg2.doubleValue)
 				}
 			}
 		})
-		alphaSlider.valueProperty.addListener(new ChangeListener[Number] {
+		ckSlider.valueProperty.addListener(new ChangeListener[Number] {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
-					alphaLcd.setValue(arg2.doubleValue)
+					ckLCD.setValue(arg2.doubleValue)
 				}
 			}
 		})
-		upperSlider.valueProperty.addListener(new ChangeListener[Number] {
+		thresholdSlider.valueProperty.addListener(new ChangeListener[Number] {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
-					upperLcd.setValue(arg1.doubleValue)
-				}
-			}
-		})
-		lowerSlider.valueProperty.addListener(new ChangeListener[Number] {
-			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
-				if (pixelStack != null) {
-					lowerLcd.setValue(arg1.doubleValue)
+					thresholdLCD.setValue(arg1.doubleValue)
 				}
 			}
 		})
@@ -256,69 +250,56 @@ class ImageLoadController extends Initializable {
 	private def makeControllers {
 		val StyleRadius : StyleModel = StyleModelBuilder.create.lcdDesign(LcdDesign.DARK_BLUE).lcdValueFont(Gauge.LcdFont.LCD).lcdUnitStringVisible(true).lcdDecimals(0).lcdNumberSystemVisible(true).build
 		val StyleAll : StyleModel = StyleModelBuilder.create.lcdDesign(LcdDesign.DARK_BLUE).lcdValueFont(Gauge.LcdFont.LCD).lcdUnitStringVisible(true).lcdDecimals(3).lcdNumberSystemVisible(true).build
-		radiusLcd = LcdBuilder.create.styleModel(StyleRadius).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(0).maxMeasuredValueDecimals(0).formerValueVisible(true).title("Median Filter Radius").unit("px").value(3).build
-		radiusLcd.setPrefSize(200, 50)
-		alphaLcd = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Alpha Value").unit("arb.").value(0.780).build
-		alphaLcd.setPrefSize(200, 50)
-		upperLcd = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Upper Limit Value").unit("arb.").value(410.0).trendVisible(true).build
-		upperLcd.setPrefSize(200, 50)
-		upperLcd.setMaxValue(500.0)
-		lowerLcd = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Lower Limit Value").unit("arb.").value(10.0).build
-		lowerLcd.setPrefSize(200, 50)
-		lowerLcd.setMaxValue(250.0)
+		anglesLCD = LcdBuilder.create.styleModel(StyleRadius).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(0).maxMeasuredValueDecimals(0).formerValueVisible(true).title("Number of Angles").unit("arb.").value(360).trendVisible(true).build
+		anglesLCD.setPrefSize(200, 50)
+		anglesLCD.setMaxValue(1000)
+		ckLCD = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Chung Kennedy Window Size").unit("px").value(10).trendVisible(true).build
+		ckLCD.setPrefSize(200, 50)
+		ckLCD.setMaxValue(100)
+		thresholdLCD = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Threshold").unit("%").value(10.0).trendVisible(true).build
+		thresholdLCD.setPrefSize(200, 50)
+		thresholdLCD.setMaxValue(250.0)
 
-		radiusSlider = new control.Slider()
-		radiusSlider.setMajorTickUnit(1)
-		radiusSlider.setMin(0)
-		radiusSlider.setMax(20.0)
-		radiusSlider.setValue(3.0)
-		radiusSlider.setOrientation(Orientation.HORIZONTAL)
-		radiusSlider.setMinorTickCount(0)
-		radiusSlider.setShowTickLabels(false)
-		radiusSlider.setShowTickMarks(false)
-		radiusSlider.setSnapToTicks(true)
+		anglesSlider = new control.Slider()
+		anglesSlider.setMajorTickUnit(10)
+		anglesSlider.setMin(0)
+		anglesSlider.setMax(1000.0)
+		anglesSlider.setValue(360.0)
+		anglesSlider.setOrientation(Orientation.HORIZONTAL)
+		anglesSlider.setMinorTickCount(0)
+		anglesSlider.setShowTickLabels(false)
+		anglesSlider.setShowTickMarks(false)
+		anglesSlider.setSnapToTicks(true)
 
-		alphaSlider = new control.Slider()
-		alphaSlider.setMajorTickUnit(0.01)
-		alphaSlider.setMin(0.0)
-		alphaSlider.setMax(1.0)
-		alphaSlider.setValue(0.780)
-		alphaSlider.setOrientation(Orientation.HORIZONTAL)
-		alphaSlider.setMinorTickCount(0)
-		alphaSlider.setShowTickLabels(false)
-		alphaSlider.setShowTickMarks(false)
-		alphaSlider.setSnapToTicks(true)
+		ckSlider = new control.Slider()
+		ckSlider.setMajorTickUnit(1)
+		ckSlider.setMin(0.0)
+		ckSlider.setMax(100.0)
+		ckSlider.setValue(10)
+		ckSlider.setOrientation(Orientation.HORIZONTAL)
+		ckSlider.setMinorTickCount(0)
+		ckSlider.setShowTickLabels(false)
+		ckSlider.setShowTickMarks(false)
+		ckSlider.setSnapToTicks(true)
 
-		upperSlider = new control.Slider()
-		upperSlider.setMajorTickUnit(0.1)
-		upperSlider.setMin(10.0)
-		upperSlider.setMax(500.0)
-		upperSlider.setValue(410.0)
-		upperSlider.setOrientation(Orientation.HORIZONTAL)
-		upperSlider.setMinorTickCount(0)
-		upperSlider.setShowTickLabels(false)
-		upperSlider.setShowTickMarks(false)
-		upperSlider.setSnapToTicks(true)
+		thresholdSlider = new control.Slider()
+		thresholdSlider.setMajorTickUnit(0.1)
+		thresholdSlider.setMin(0.0)
+		thresholdSlider.setMax(100.0)
+		thresholdSlider.setValue(5.0)
+		thresholdSlider.setOrientation(Orientation.HORIZONTAL)
+		thresholdSlider.setMinorTickCount(0)
+		thresholdSlider.setShowTickLabels(false)
+		thresholdSlider.setShowTickMarks(false)
+		thresholdSlider.setSnapToTicks(true)
 
-		lowerSlider = new control.Slider()
-		lowerSlider.setMajorTickUnit(0.1)
-		lowerSlider.setMin(0.0)
-		lowerSlider.setMax(250.0)
-		lowerSlider.setValue(10.0)
-		lowerSlider.setOrientation(Orientation.HORIZONTAL)
-		lowerSlider.setMinorTickCount(0)
-		lowerSlider.setShowTickLabels(false)
-		lowerSlider.setShowTickMarks(false)
-		lowerSlider.setSnapToTicks(true)
 
-		controllerBox.getChildren.add(radiusLcd)
-		controllerBox.getChildren.add(radiusSlider)
-		controllerBox.getChildren.add(alphaLcd)
-		controllerBox.getChildren.add(alphaSlider)
-		controllerBox.getChildren.add(upperLcd)
-		controllerBox.getChildren.add(upperSlider)
-		controllerBox.getChildren.add(lowerLcd)
-		controllerBox.getChildren.add(lowerSlider)
+		controllerBox.getChildren.add(anglesLCD)
+		controllerBox.getChildren.add(anglesSlider)
+		controllerBox.getChildren.add(ckLCD)
+		controllerBox.getChildren.add(ckSlider)
+		controllerBox.getChildren.add(thresholdLCD)
+		controllerBox.getChildren.add(thresholdSlider)
 		controllerBox.setOpacity(0)
 		setSliderParams
 	}

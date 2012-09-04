@@ -1,6 +1,7 @@
 package com.jamesrthompson.Data
 
 import javafx.scene.chart.XYChart
+import com.jamesrthompson.Fitting._
 
 /**
  * Contour class - container for Points[Cartesian or Polar] describing an instance of an arbitrary(0 -> infinitely sized) polygon's edge in 2D space
@@ -23,11 +24,27 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
 	def getMaxRadius = points.map(_.polar.rad).max
 
   def sortPoints = points = {
+      println("Sort Points was messaged!")
       val xavg = points.map(_.cartesian.x).sum / points.length
       val yavg = points.map(_.cartesian.y).sum / points.length
       val newPoints = for(p <- points) yield pointFactory.mkCartesianPoint(p.cartesian.x - xavg, p.cartesian.y - yavg)
       newPoints.sortBy(_.polar.ang)
   }
+
+  def sortPointsByFitting = points = {
+    val fitter = new ConicFit()
+    val originalSeries = this.getSeries(0)
+    fitter.fitInit(originalSeries)
+    val fitPoints = fitter.getFit
+    val xpoints = for(x <- 0 until fitPoints.getData.size) yield fitPoints.getData.get(x).getXValue
+    val ypoints = for(y <- 0 until fitPoints.getData.size) yield fitPoints.getData.get(y).getYValue
+    val xavg = xpoints.map(_.doubleValue).sum / xpoints.length
+    val yavg = ypoints.map(_.doubleValue).sum / ypoints.length
+    println("xavg = " + xavg.toString + ", yavg = " + yavg.toString)
+    val newPoints = for(p <- points) yield pointFactory.mkCartesianPoint(p.cartesian.x - xavg, p.cartesian.y - yavg)
+    newPoints.sortBy(_.polar.ang)
+  }
+
   def avgRadius = getRadii.sum / numPoints
   def stDev = {
       val avg = avgRadius

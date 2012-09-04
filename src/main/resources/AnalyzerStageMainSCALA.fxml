@@ -38,7 +38,11 @@
             <MenuItem id="menuItem8" onAction="#exitApp" text="Quit" />
           </items>
         </Menu>
-        <Menu id="menu1" text="Edit" />
+        <Menu id="menu1" text="Edit">
+          <items>
+            <MenuItem id="menuItem9" onAction="#sortContours" text="Sort Points" />
+          </items>
+        </Menu>
         <Menu id="analysisMenu" text="Analysis" fx:id="AnalysisMenu">
           <items>
             <CustomMenuItem id="customMenuItem1" text="Legendre Decomposition" fx:id="legMenu">
@@ -141,6 +145,6 @@
     </SplitPane>
   </children>
   <stylesheets>
-    <URL value="@GUVLook.css" />
+    <URL value="@../../../../GUVsSCALA/src/Controllers/GUVLook.css" />
   </stylesheets>
 </AnchorPane>

@@ -86,9 +86,14 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
  				val y = r * sin(angle) + centerY
  				getInterpolatedPixel(x, y)
  			}
- 			val ck = ckf(arr.toList, windowSize)
-      val value = ck.indexOf(ck.max).toDouble + windowSize // Need to add the windowSize from the CKF filter
+ 			//val ck = ckf(arr.toList, windowSize)
+      //val value = ck.indexOf(ck.max).toDouble + windowSize // Need to add the windowSize from the CKF filter
       // CHECK THAT A STRAIGHTFORWARD CENTRAL DIFFERENCE ALGORITHM ISN'T SUPERIOR TO CKF .. I SUSPECT IT MIGHT BE
+      val output = arr.toList
+      val biggest = {
+          for(i <- 1 until output.length - 1) yield (output(i+1)-output(i)) - (output(i-1)-output(i))
+      }
+      val value = biggest.indexOf(biggest.max)
       val maxRange = value * (thresholdPercent / 100.0)
       if(yy < 1) {
         value
