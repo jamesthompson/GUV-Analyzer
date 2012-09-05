@@ -22,26 +22,7 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
 
   lazy val img : Array[Double] = i
 
- 	def calcStDev(in: List[Double]) = {
-    def squaredDifference(v1:Double, v2:Double) = pow(v1 - v2,2.0)
-    val mean = in.sum / in.length
-    val squared = in.foldLeft(0.0)(_ + squaredDifference(_, mean))
-    sqrt(squared / in.length.toDouble)
-  }
-
- 	def ckf(in:List[Double], windowSize:Int) : List[Double] = {
-  	val out = for(i <- windowSize until in.length - windowSize) yield {
-  		val forward = calcStDev(in.slice(i, i + windowSize + 1))
-  		val backward = calcStDev(in.slice(i - windowSize - 1, i))
-  		forward < backward match {
-  			case true => forward
-  			case false  => backward 
-  		}
-  	}
-  	out.toList
- 	}
-
- 	def convImgToPolar(angleLines:Int, windowSize:Int, thresholdPercent:Double) : List[(List[Double], PolarLocation)] = {
+ 	def convImgToPolar(angleLines:Int, thresholdPercent:Double) : List[(List[Double], PolarLocation)] = {
  		val widthInitial = width
  		val heightInitial = height
  		val centerX = width / 2
@@ -86,9 +67,6 @@ class EdgeFinder(i:Array[Byte], width:Int, height:Int) {
  				val y = r * sin(angle) + centerY
  				getInterpolatedPixel(x, y)
  			}
- 			//val ck = ckf(arr.toList, windowSize)
-      //val value = ck.indexOf(ck.max).toDouble + windowSize // Need to add the windowSize from the CKF filter
-      // CHECK THAT A STRAIGHTFORWARD CENTRAL DIFFERENCE ALGORITHM ISN'T SUPERIOR TO CKF .. I SUSPECT IT MIGHT BE
       val output = arr.toList
       val biggest = {
           for(i <- 1 until output.length - 1) yield (output(i+1)-output(i)) - (output(i-1)-output(i))

@@ -212,7 +212,10 @@ class Controller extends Initializable {
 			case true => warn("Please load a dataset first!")
 			case false => {
 				val index = frameSlider.getValue.toInt
+				val originalLength = listView.getSelectionModel.getSelectedItem.contours.length
 				listView.getSelectionModel.getSelectedItem.killContour(index)
+				frameSlider.setMax(frameSlider.getMax - 1)
+				println("Deleted frame number " + index + ", was " + originalLength + " frames, now " + listView.getSelectionModel.getSelectedItem.contours.length + " long" )
 			}
 		}
 	}

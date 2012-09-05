@@ -17,7 +17,7 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
   def this(name:String) = this(IndexedSeq[Contour](), name)
   def addContour(cont:Contour) = contours = contours.+:(cont)
   def getContour(index:Int) = contours(index)
-  def killContour(index:Int) = (contours take index) ++ (contours drop (index + 1))
+  def killContour(index:Int) = contours = (contours take index) ++ (contours drop (index + 1))
   def getSize = contours.length
   def avgRadius : Double = contours.map(_.avgRadius).sum / getSize
   def getFrameChart(index:Int) = contours(index).getSeries(avgRadius)

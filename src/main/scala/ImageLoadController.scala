@@ -53,16 +53,11 @@ class ImageLoadController extends Initializable {
 	@FXML private[Controllers] var readyButton : Button = null
 	@FXML private[Controllers] var controllerBox : VBox = null
 	@FXML private[Controllers] var imageBox : VBox = null
-	@FXML private[Controllers] var toolBar : ToolBar = null
-	@FXML private[Controllers] var pixelScaleBox : ChoiceBox[_] = null
-	@FXML private[Controllers] var fpsField : TextField = null
+	@FXML private[Controllers] var toolBar : ToolBar = nullsbt run
 
 	private var anglesLCD : Lcd = null
-	private var ckLCD : Lcd = null
 	private var thresholdLCD : Lcd = null
-
 	private var anglesSlider : Slider = null
-	private var ckSlider : Slider = null
 	private var thresholdSlider : Slider = null
 
 	lazy val loaderObj = new ImageLoad
@@ -99,7 +94,7 @@ class ImageLoadController extends Initializable {
 
 	def updateEdge(frame:Int) {
 		val ef = new EdgeFinder(pixelStack(frame), width, height)
-		val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, ckSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
+		val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
 		val edgeLocation = calc.map(_._2)
 		val ckfImage = getByteArrayFromCKF(calc.map(_._1))
 		val jfxCKF = JFXImageUtil.getJavaFXImage(ckfImage.bytes, ckfImage.width, ckfImage.height)
@@ -113,10 +108,10 @@ class ImageLoadController extends Initializable {
 		val yscale = ckfPreview.getFitHeight / height
 		val path = new Path
 		path.setStroke(Color.RED)
-    path.setStrokeWidth(1.0)
-    path.setOpacity(1.0)
-    path.getElements().add(new MoveTo(imageBox.getLayoutX + (location(0).x + 0.5) * xscale, imageBox.getLayoutY + (location(0).y + 0.5) * yscale))
-    location.filter(location.indexOf(_) != 0).map(p => path.getElements().add(new LineTo(imageBox.getLayoutX + (p.x + 0.5) * xscale, imageBox.getLayoutY + (p.y + 0.5) * yscale)))
+	    path.setStrokeWidth(1.0)
+	    path.setOpacity(1.0)
+	    path.getElements().add(new MoveTo(imageBox.getLayoutX + (location(0).x + 0.5) * xscale, imageBox.getLayoutY + (location(0).y + 0.5) * yscale))
+	    location.filter(location.indexOf(_) != 0).map(p => path.getElements().add(new LineTo(imageBox.getLayoutX + (p.x + 0.5) * xscale, imageBox.getLayoutY + (p.y + 0.5) * yscale)))
 		edgeGroup.getChildren.add(path)
 	}
 
@@ -154,7 +149,7 @@ class ImageLoadController extends Initializable {
 						implicit def conv2Dto1D(loc:(Int,Int)) : Int = loc._2 * width + loc._1
 						for(array <- pixelStack) {
 							val ef = new EdgeFinder(array, width, height)
-							val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, ckSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
+							val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
 							val cont = new Contour(ef.getPoints(calc))
 							cont.sortPointsByFitting
 							updateProgress(pixelStack.indexOf(array), pixelStack.size - 1)
@@ -208,8 +203,6 @@ class ImageLoadController extends Initializable {
 		slideft.play
 		readyft.play
 		edgePreviewButton.setVisible(true)
-		fpsField.setVisible(true)
-		pixelScaleBox.setVisible(true)
 	}
 
 	private def setSliderParams {
@@ -231,13 +224,6 @@ class ImageLoadController extends Initializable {
 				}
 			}
 		})
-		ckSlider.valueProperty.addListener(new ChangeListener[Number] {
-			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
-				if (pixelStack != null) {
-					ckLCD.setValue(arg2.doubleValue)
-				}
-			}
-		})
 		thresholdSlider.valueProperty.addListener(new ChangeListener[Number] {
 			def changed(arg0 : ObservableValue[_ <: Number], arg1 : Number, arg2 : Number) {
 				if (pixelStack != null) {
@@ -253,9 +239,6 @@ class ImageLoadController extends Initializable {
 		anglesLCD = LcdBuilder.create.styleModel(StyleRadius).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(0).maxMeasuredValueDecimals(0).formerValueVisible(true).title("Number of Angles").unit("arb.").value(360).trendVisible(true).build
 		anglesLCD.setPrefSize(200, 50)
 		anglesLCD.setMaxValue(1000)
-		ckLCD = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Chung Kennedy Window Size").unit("px").value(10).trendVisible(true).build
-		ckLCD.setPrefSize(200, 50)
-		ckLCD.setMaxValue(100)
 		thresholdLCD = LcdBuilder.create.styleModel(StyleAll).minMeasuredValueVisible(true).maxMeasuredValueVisible(true).minMeasuredValueDecimals(3).maxMeasuredValueDecimals(3).formerValueVisible(true).title("Threshold").unit("%").value(10.0).trendVisible(true).build
 		thresholdLCD.setPrefSize(200, 50)
 		thresholdLCD.setMaxValue(250.0)
@@ -271,16 +254,6 @@ class ImageLoadController extends Initializable {
 		anglesSlider.setShowTickMarks(false)
 		anglesSlider.setSnapToTicks(true)
 
-		ckSlider = new control.Slider()
-		ckSlider.setMajorTickUnit(1)
-		ckSlider.setMin(0.0)
-		ckSlider.setMax(100.0)
-		ckSlider.setValue(10)
-		ckSlider.setOrientation(Orientation.HORIZONTAL)
-		ckSlider.setMinorTickCount(0)
-		ckSlider.setShowTickLabels(false)
-		ckSlider.setShowTickMarks(false)
-		ckSlider.setSnapToTicks(true)
 
 		thresholdSlider = new control.Slider()
 		thresholdSlider.setMajorTickUnit(0.1)
@@ -296,8 +269,6 @@ class ImageLoadController extends Initializable {
 
 		controllerBox.getChildren.add(anglesLCD)
 		controllerBox.getChildren.add(anglesSlider)
-		controllerBox.getChildren.add(ckLCD)
-		controllerBox.getChildren.add(ckSlider)
 		controllerBox.getChildren.add(thresholdLCD)
 		controllerBox.getChildren.add(thresholdSlider)
 		controllerBox.setOpacity(0)

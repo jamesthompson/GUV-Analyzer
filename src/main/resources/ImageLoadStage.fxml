@@ -11,7 +11,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" fx:id="imageLoadAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="531.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.ImageLoadController">
+<AnchorPane id="AnchorPane" fx:id="imageLoadAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="479.0" prefWidth="517.0" styleClass="backdrop" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.ImageLoadController">
   <children>
     <ToolBar id="toolBar1" fx:id="toolBar" prefWidth="531.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
@@ -21,22 +21,16 @@
         <ProgressBar id="progressBar1" fx:id="progressBar" prefHeight="21.0" prefWidth="150.0" progress="0.0" visible="false" />
       </items>
     </ToolBar>
-    <Slider id="sliderHorizontal1" fx:id="frameSlider" opacity="0.0" prefWidth="267.0" AnchorPane.leftAnchor="238.0" AnchorPane.topAnchor="487.0" />
-    <ImageView id="emptyImageView2" fx:id="imagePreview" fitHeight="255.0" fitWidth="255.0" preserveRatio="true" smooth="false" AnchorPane.bottomAnchor="330.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="54.0" />
-    <VBox id="vBox1" fx:id="controllerBox" prefHeight="278.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="54.0" />
-    <ChoiceBox id="choiceBox1" fx:id="pixelScaleBox" visible="false" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="40.0">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Item 1" />
-          <String fx:value="Item 2" />
-          <String fx:value="Item 3" />
-        </FXCollections>
-      </items>
-    </ChoiceBox>
-    <TextField id="textField1" fx:id="fpsField" prefWidth="68.0" promptText="fps" visible="false" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="140.0" />
-    <VBox id="vBox2" fx:id="imageBox" layoutX="250.0" layoutY="320.0" minHeight="154.0" prefHeight="154.0" prefWidth="255.0">
+    <Slider id="sliderHorizontal1" fx:id="frameSlider" opacity="0.0" prefWidth="224.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="45.0" />
+    <VBox id="vBox1" fx:id="controllerBox" prefHeight="134.0" prefWidth="200.0" AnchorPane.leftAnchor="42.0" AnchorPane.topAnchor="61.0" />
+    <VBox id="vBox2" fx:id="imageBox" minHeight="154.0" minWidth="224.0" prefHeight="394.9998779296875" prefWidth="224.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="69.0">
       <children>
-        <ImageView id="emptyImageView1" fx:id="ckfPreview" fitHeight="162.0" fitWidth="255.0" smooth="false" />
+        <ImageView id="emptyImageView1" fx:id="ckfPreview" fitHeight="395.0" fitWidth="224.0" smooth="false" />
+      </children>
+    </VBox>
+    <VBox id="VBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="15.0">
+      <children>
+        <ImageView id="emptyImageView2" fx:id="imagePreview" fitHeight="255.0" fitWidth="255.0" preserveRatio="true" smooth="false" />
       </children>
     </VBox>
   </children>
