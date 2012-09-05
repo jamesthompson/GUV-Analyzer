@@ -78,7 +78,7 @@ class Controller extends Initializable {
 			}
 		})
 		buildRightHandSide
-		modePicker = new BigDecimalField(BigDecimal.valueOf(180), new BigDecimal("1"), NumberFormat.getIntegerInstance)
+		modePicker = new BigDecimalField(BigDecimal.valueOf(35), new BigDecimal("1"), NumberFormat.getIntegerInstance)
 		modePicker.getStyleClass.add("bigDecimalField")
 		val legMenuPane : GridPane = new GridPane
 		legMenuPane.setVgap(10.0)
@@ -199,11 +199,20 @@ class Controller extends Initializable {
 	}
 
 	def sortContours(event: ActionEvent) {
-		println("SortContours clicked")
 		listView.getSelectionModel.isEmpty match {
 			case true => warn("Please load a dataset first!")
 			case false => {
 				listView.getSelectionModel.getSelectedItem.contours.map(_.sortPointsByFitting)
+			}
+		}
+	}
+
+	def deleteContour(event: ActionEvent) {
+		listView.getSelectionModel.isEmpty match {
+			case true => warn("Please load a dataset first!")
+			case false => {
+				val index = frameSlider.getValue.toInt
+				listView.getSelectionModel.getSelectedItem.killContour(index)
 			}
 		}
 	}

@@ -41,6 +41,7 @@
         <Menu id="menu1" text="Edit">
           <items>
             <MenuItem id="menuItem9" onAction="#sortContours" text="Sort Points" />
+            <MenuItem id="menuItem14" onAction="#deleteContour" text="Delete contour" />
           </items>
         </Menu>
         <Menu id="analysisMenu" text="Analysis" fx:id="AnalysisMenu">

@@ -40,7 +40,6 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
     val ypoints = for(y <- 0 until fitPoints.getData.size) yield fitPoints.getData.get(y).getYValue
     val xavg = xpoints.map(_.doubleValue).sum / xpoints.length
     val yavg = ypoints.map(_.doubleValue).sum / ypoints.length
-    println("xavg = " + xavg.toString + ", yavg = " + yavg.toString)
     val newPoints = for(p <- points) yield pointFactory.mkCartesianPoint(p.cartesian.x - xavg, p.cartesian.y - yavg)
     newPoints.sortBy(_.polar.ang)
   }

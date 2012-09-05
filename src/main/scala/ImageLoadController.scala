@@ -156,7 +156,7 @@ class ImageLoadController extends Initializable {
 							val ef = new EdgeFinder(array, width, height)
 							val calc = ef.convImgToPolar(anglesSlider.getValue.toInt, ckSlider.getValue.toInt, thresholdSlider.getValue.toDouble)
 							val cont = new Contour(ef.getPoints(calc))
-							//cont.sortPoints
+							cont.sortPointsByFitting
 							updateProgress(pixelStack.indexOf(array), pixelStack.size - 1)
 							guv.addContour(cont)
 						}
