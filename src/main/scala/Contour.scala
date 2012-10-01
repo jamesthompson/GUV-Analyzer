@@ -10,12 +10,15 @@ import com.jamesrthompson.Fitting._
  */
 
 class Contour(var points : IndexedSeq[Point]) extends Serializable {
+   
    def this() = this(IndexedSeq[Point]())
    var sphericalHarmonicAmplitudes:IndexedSeq[Double] = null
-   var fourierAmplitudes:IndexedSeq[Double] = null
+   var fourierSpectrum:IndexedSeq[Complex] = null
+   lazy val real : IndexedSeq[Double] = fourierSpectrum.map(_.re)
+   lazy val imaginary : IndexedSeq[Double] = fourierSpectrum.map(_.im)
    def getSphericalAmpsSquared = sphericalHarmonicAmplitudes.map((d:Double) => d*d)
    def getSphericalAmps = sphericalHarmonicAmplitudes
-   def getFourier = fourierAmplitudes
+   def getFourier = fourierSpectrum
    def addPoint(p:Point) = points = points.+:(p)
    def getPoint(index:Int) = points.apply(index)
    def numPoints = points.size
@@ -24,7 +27,6 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
 	def getMaxRadius = points.map(_.polar.rad).max
 
   def sortPoints = points = {
-      println("Sort Points was messaged!")
       val xavg = points.map(_.cartesian.x).sum / points.length
       val yavg = points.map(_.cartesian.y).sum / points.length
       val newPoints = for(p <- points) yield pointFactory.mkCartesianPoint(p.cartesian.x - xavg, p.cartesian.y - yavg)
@@ -33,8 +35,7 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
 
   def sortPointsByFitting = points = {
     val fitter = new ConicFit()
-    val originalSeries = this.getSeries(0)
-    fitter.fitInit(originalSeries)
+    fitter.fitInit(this.getSeries(0))
     val fitPoints = fitter.getFit
     val xpoints = for(x <- 0 until fitPoints.getData.size) yield fitPoints.getData.get(x).getXValue
     val ypoints = for(y <- 0 until fitPoints.getData.size) yield fitPoints.getData.get(y).getYValue
@@ -81,15 +82,17 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
       series
   }
 
-  def calcFourier(pointsIn:IndexedSeq[Point]) = {
-      fourierAmplitudes = FFT.transformReal(pointsIn.map(_.polar.rad))
-      val series = new XYChart.Series[Number, Number]
-      fourierAmplitudes.map((d:Double) => new XYChart.Data[Number, Number](fourierAmplitudes.indexOf(d), d)).map((np:XYChart.Data[Number,Number]) => series.getData.add(np))
-      series
-  }
+  def calcFourier = fourierSpectrum = FFT.transformComplex(points.map(_.polar.rad - 1)) // assuming rescaled by R here...
+
+  def sqr(in:Double) : Double = in * in
+
+  def calcRealAvg(a_qAvg:IndexedSeq[Double]) : IndexedSeq[Double] = for(q <- 0 until a_qAvg.length) yield sqr(real(q) - a_qAvg(q))
+
+  def calcImagAvg(b_qAvg:IndexedSeq[Double]) : IndexedSeq[Double] = for(q <- 0 until b_qAvg.length) yield sqr(imaginary(q) - b_qAvg(q))
 
   def sHtoString = sphericalHarmonicAmplitudes.mkString("\n")
   override def toString = "~~~~Contour Polar Points Print Out~~~~\n\nAvg radius = " + avgRadius.toString + "\n\nSt. Deviation = " + stDev.toString + "\n\nAngle(radians)\t\tRadii\n\n" + points.toStream.map(_.polar.toString + "\n").mkString
+  def toPolarString = points.toStream.map(_.polar.toString + "\n").mkString
   def toCartString = "~~~~Contour Cartesian Points Print Out~~~~\n\nAvg radius = " + avgRadius.toString + "\n\nSt. Deviation = " + stDev.toString + "\n\nx\t\t\ty\n\n" + points.toStream.map(_.cartesian.toString + "\n").mkString
 }
 

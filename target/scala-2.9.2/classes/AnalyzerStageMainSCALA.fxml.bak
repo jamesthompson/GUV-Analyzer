@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="871.9999000000025" xmlns:fx="http://javafx.com/fxml" fx:controller="com.jamesrthompson.Controllers.Controller">
+  <children>
+    <ToolBar id="toolBar1" blendMode="MULTIPLY" cache="true" minHeight="18.0" prefHeight="27.999900000002526" prefWidth="874.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-2.0">
+      <items>
+        <Button id="button1" alignment="CENTER" minHeight="17.0" minWidth="26.0" onAction="#loadGUVs" prefHeight="17.0" prefWidth="32.0" text="+" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+          <font>
+            <Font name="System Bold" size="11.0" fx:id="x1" />
+          </font>
+        </Button>
+        <Button id="button1" fx:id="deleteButton" alignment="CENTER" font="$x1" minHeight="17.0" minWidth="26.0" onAction="#deleteGUV" prefHeight="17.0" prefWidth="32.0" text="-" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" />
+        <ProgressBar id="progressBar1" fx:id="progressBar" prefHeight="18.0" prefWidth="119.0" progress="0.0" visible="false" />
+        <Slider id="sliderHorizontal1" fx:id="frameSlider" blockIncrement="100.0" majorTickUnit="1.0" max="359.0" minorTickCount="0" prefHeight="16.0" prefWidth="438.0" snapToTicks="true" />
+      </items>
+    </ToolBar>
+    <ListView id="listView1" fx:id="listView" onMouseClicked="#vesicleSelectionChanged" prefHeight="546.0000999999975" prefWidth="203.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="27.0" />
+    <MenuBar fx:id="menuBar" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="778.0" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <menus>
+        <Menu id="fileMenu" text="File" fx:id="FileMenu">
+          <items>
+            <MenuItem id="menuItem4" onAction="#launchImageLoad" text="Load Image..." fx:id="loadImageMenuItem" />
+            <MenuItem id="menuItem1" onAction="#loadGUVs" text="Load GUV(s)..." />
+            <MenuItem id="menuItem10" onAction="#saveGUV" text="Save GUV..." />
+            <MenuItem id="menuItem6" onAction="#saveAllGUVs" text="Save GUVs..." />
+            <MenuItem id="menuItem7" text="Save graphics..." />
+            <MenuItem id="menuItem8" onAction="#exitApp" text="Quit" />
+          </items>
+        </Menu>
+        <Menu id="menu1" text="Edit">
+          <items>
+            <MenuItem id="menuItem9" onAction="#sortContours" text="Sort Points" />
+            <MenuItem id="menuItem14" onAction="#deleteContour" text="Delete contour" />
+          </items>
+        </Menu>
+        <Menu id="analysisMenu" text="Analysis" fx:id="AnalysisMenu">
+          <items>
+            <CustomMenuItem id="customMenuItem1" text="Legendre Decomposition" fx:id="legMenu">
+              <content>
+                <Button id="button2" fx:id="runLegButton" onAction="#runLegendre" text="Run" />
+              </content>
+            </CustomMenuItem>
+            <MenuItem id="menuItem11" onAction="#launchSphericalAnalysis" text="Spherical Harmonics" />
+            <MenuItem id="menuItem5" onAction="#corrLoad" text="Correlations" />
+          </items>
+        </Menu>
+        <Menu id="menu2" text="Simulations">
+          <items>
+            <CustomMenuItem id="customMenuItem2" text="Unspecified Action" fx:id="simulMenu">
+              <content>
+                <Button id="button3" fx:id="simulButton" onAction="#simulateGUV" text="Simulate" />
+              </content>
+            </CustomMenuItem>
+          </items>
+        </Menu>
+        <Menu id="comparisonsMenu" text="Comparisons" fx:id="ComparisonsMenu">
+          <items>
+            <MenuItem id="menuItem2" text="Compare Vesicles..." />
+          </items>
+        </Menu>
+        <Menu id="helpMenu1" text="Help">
+          <items>
+            <MenuItem id="about1" text="About" />
+            <MenuItem id="menuItem3" text="Help Browser" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <SplitPane id="splitPaneHorizontal1" dividerPositions="0.6601796407185628" focusTraversable="true" prefHeight="546.0" prefWidth="586.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="202.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
+      <items>
+        <AnchorPane id="anchorPane1" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <children>
+            <Accordion id="accordion1" prefHeight="544.0" prefWidth="471.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <expandedPane>
+                <TitledPane id="titledPane1" fx:id="x3" animated="false" text="Vesicle Outline">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <LineChart fx:id="lineChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="437.0" prefWidth="437.0" snapToPixel="false" title="" verticalGridLinesVisible="false" verticalZeroLineVisible="false" AnchorPane.bottomAnchor="29.5" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="29.5">
+                          <xAxis>
+                            <NumberAxis id="yAxis1" fx:id="YAxis" animated="false" autoRanging="false" label="Size / arb. units" minorTickCount="0" minorTickVisible="false" side="BOTTOM" upperBound="10.0" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis id="yAxis1" fx:id="XAxis" animated="false" autoRanging="false" label="Size / arb. units" minorTickCount="0" minorTickVisible="false" side="LEFT" upperBound="10.0" />
+                          </yAxis>
+                        </LineChart>
+                        <Button id="button4" layoutX="295.0" layoutY="6.0" onAction="#deleteContour" text="Delete Slice" />
+                        <Button id="button4" layoutX="391.0" layoutY="6.0" onAction="#skipForward" text="&gt;" />
+                        <Button id="button4" layoutX="257.0" layoutY="6.0" onAction="#skipBackward" text="&lt;" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                  <contextMenu>
+                    <ContextMenu id="contextMenu1">
+                      <items>
+                        <MenuItem id="menuItem12" onAction="#copyPolarPoints" text="Copy Polar Coordinates" />
+                        <MenuItem id="menuItem13" onAction="#copyCartesianPoints" text="Copy Cartesian Points" />
+                      </items>
+                    </ContextMenu>
+                  </contextMenu>
+                </TitledPane>
+              </expandedPane>
+              <panes>
+                <fx:reference source="x3" />
+                <TitledPane id="titledPane2" fx:id="x2" animated="false" prefHeight="521.0" prefWidth="471.0" text="Deviation from Mean Radius">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <LineChart fx:id="deviationChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" legendVisible="false" minHeight="64.0" prefHeight="265.0" prefWidth="438.0" verticalGridLinesVisible="false" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="106.0">
+                          <xAxis>
+                            <NumberAxis id="xAxis1" animated="false" autoRanging="false" forceZeroInRange="false" label="Angle -π to π / radians" lowerBound="-3.1416" minorTickVisible="false" side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" upperBound="3.1416" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis id="yAxis2" animated="false" autoRanging="false" label="µm" lowerBound="-1.5" minorTickCount="3" minorTickVisible="false" prefHeight="40.0" prefWidth="36.0" side="LEFT" tickLabelGap="5.0" tickLength="5.0" tickUnit="0.5" upperBound="1.5" visible="false">
+                              <tickLabelFont>
+                                <Font size="7.0" />
+                              </tickLabelFont>
+                            </NumberAxis>
+                          </yAxis>
+                          <padding>
+                            <Insets bottom="5.0" right="5.0" top="5.0" />
+                          </padding>
+                        </LineChart>
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+          </children>
+        </AnchorPane>
+        <AnchorPane id="anchorPane2" fx:id="rightAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="544.0" prefWidth="213.0">
+          <children>
+            <VBox id="vBox1" fx:id="rightBox" prefHeight="544.0" prefWidth="224.0" styleClass="backdrop" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+  </children>
+  <stylesheets>
+    <URL value="@../../../../GUVsSCALA/src/Controllers/GUVLook.css" />
+  </stylesheets>
+</AnchorPane>

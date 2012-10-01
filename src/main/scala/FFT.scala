@@ -16,6 +16,11 @@ object FFT {
 		outComplex.map(c => math.sqrt((c.re * c.re) + (c.im * c.im))).take((data.length / 2) + 1).toIndexedSeq // Magnitude Output
 	}
 
+	def transformComplex(input:IndexedSeq[Double]) = {
+		val data = padder(input.map(i => Complex(i)).toList)
+		fft(data).take((data.length / 2) + 1).toIndexedSeq // Complex Output, re = a_n coeffs, im = b_n coeffs 
+	}
+
 	def powerSpectrum(input:IndexedSeq[Double]) = {
 		val data = padder(input.map(i => Complex(i)).toList)
 		val outComplex = fft(data)

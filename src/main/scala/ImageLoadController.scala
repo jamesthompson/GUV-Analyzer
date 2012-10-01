@@ -53,7 +53,7 @@ class ImageLoadController extends Initializable {
 	@FXML private[Controllers] var readyButton : Button = null
 	@FXML private[Controllers] var controllerBox : VBox = null
 	@FXML private[Controllers] var imageBox : VBox = null
-	@FXML private[Controllers] var toolBar : ToolBar = nullsbt run
+	@FXML private[Controllers] var toolBar : ToolBar = null
 
 	private var anglesLCD : Lcd = null
 	private var thresholdLCD : Lcd = null

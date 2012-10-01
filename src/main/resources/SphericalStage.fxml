@@ -23,28 +23,36 @@
         <NumberAxis id="yAxis1" side="LEFT" />
       </yAxis>
     </AreaChart>
-    <AreaChart fx:id="msaChart" legendVisible="false" onMouseClicked="#saveMSA" prefHeight="231.0" prefWidth="551.0" title="Mean Square Amplitudes" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="106.0" AnchorPane.topAnchor="24.0">
-      <xAxis>
-        <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
-      </xAxis>
-      <yAxis>
-        <NumberAxis id="yAxis1" label="&lt;|u|^2&gt;" side="LEFT" />
-      </yAxis>
-    </AreaChart>
-    <LineChart fx:id="ampChart" animated="false" createSymbols="false" legendVisible="false" onMouseClicked="#saveFrameAmp" prefHeight="231.0" prefWidth="551.0" title="Amplitudes For Frame" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="106.0">
-      <xAxis>
-        <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
-      </xAxis>
-      <yAxis>
-        <NumberAxis id="yAxis1" autoRanging="false" label="Amplitude" lowerBound="-0.1" prefHeight="146.0" prefWidth="43.0" side="LEFT" upperBound="0.1" />
-      </yAxis>
-    </LineChart>
-    <Slider id="sliderHorizontal1" fx:id="frameSlider" prefWidth="497.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="120.0" />
-    <TextField id="textField1" fx:id="bendingModField" layoutX="562.0" layoutY="78.0" prefWidth="69.0" promptText="Bend mod" />
-    <TextField id="textField1" fx:id="redSigmaField" layoutX="562.0" layoutY="111.0" prefWidth="69.0" promptText="Red Sigma" />
-    <Button id="button1" layoutX="565.0" layoutY="46.0" onAction="#fit" text="Fit" />
-    <TextField id="textField1" fx:id="startField" layoutX="562.0" layoutY="148.0" prefWidth="69.0" promptText="Start Mode" />
-    <TextField id="textField1" fx:id="endField" layoutX="562.0" layoutY="181.0" prefWidth="69.0" promptText="End Mode" />
+    <VBox id="VBox" alignment="CENTER" prefHeight="181.0" prefWidth="106.0" spacing="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="39.0">
+      <children>
+        <Button id="button1" onAction="#fit" text="Fit" />
+        <TextField id="textField1" fx:id="bendingModField" prefWidth="69.0" promptText="Bend mod" />
+        <TextField id="textField1" fx:id="redSigmaField" prefWidth="69.0" promptText="Red Sigma" />
+        <TextField id="textField1" fx:id="startField" prefWidth="69.0" promptText="Start Mode" />
+        <TextField id="textField1" fx:id="endField" prefWidth="69.0" promptText="End Mode" />
+      </children>
+    </VBox>
+    <VBox id="VBox" alignment="CENTER" prefHeight="508.0" prefWidth="522.0" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="121.0" AnchorPane.topAnchor="14.0">
+      <children>
+        <AreaChart fx:id="msaChart" legendVisible="false" onMouseClicked="#saveMSA" prefHeight="231.0" prefWidth="551.0" title="Mean Square Amplitudes" VBox.vgrow="ALWAYS">
+          <xAxis>
+            <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
+          </xAxis>
+          <yAxis>
+            <NumberAxis id="yAxis1" label="&lt;|u|^2&gt;" side="LEFT" />
+          </yAxis>
+        </AreaChart>
+        <LineChart fx:id="ampChart" animated="false" createSymbols="false" legendVisible="false" onMouseClicked="#saveFrameAmp" prefHeight="231.0" prefWidth="551.0" title="Amplitudes For Frame" VBox.vgrow="ALWAYS">
+          <xAxis>
+            <NumberAxis id="xAxis1" label="Mode Number" side="BOTTOM" />
+          </xAxis>
+          <yAxis>
+            <NumberAxis id="yAxis1" autoRanging="false" label="Amplitude" lowerBound="-0.1" prefHeight="146.0" prefWidth="43.0" side="LEFT" upperBound="0.1" />
+          </yAxis>
+        </LineChart>
+        <Slider id="sliderHorizontal1" fx:id="frameSlider" prefWidth="497.0" VBox.vgrow="ALWAYS" />
+      </children>
+    </VBox>
   </children>
   <stylesheets>
     <URL value="@SphericalLook.css" />

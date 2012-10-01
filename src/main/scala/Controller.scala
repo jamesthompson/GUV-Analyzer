@@ -13,6 +13,7 @@ import javafx.collections.{FXCollections, ObservableList}
 import javafx.concurrent.{Service, Task, Worker}
 import javafx.event.{ActionEvent, Event}
 import javafx.fxml.{FXML, FXMLLoader, Initializable, JavaFXBuilderFactory}
+import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.chart.{NumberAxis, LineChart, XYChart}
 import javafx.scene.control._
@@ -146,7 +147,7 @@ class Controller extends Initializable {
 
 	// ----| Event Handling
 
-	def exitApp(event : ActionEvent) = ()
+	def exitApp(event : ActionEvent) = Platform.exit
 
 	def runLegendre(event : ActionEvent) {
 		listView.getSelectionModel.isEmpty match {
@@ -159,7 +160,8 @@ class Controller extends Initializable {
 					return new Task[Void] {
 						protected def call : Void = {
 							val guv : GUV = listView.getSelectionModel.getSelectedItem
-							guv.calcSphericalHarmonics(modePicker.getNumber.intValue, guv.avgRadius)
+							//guv.calcSphericalHarmonics(modePicker.getNumber.intValue, guv.avgRadius)
+							guv.v_qCalc(guv.avgRadius)
 							return null
 						}
 					}
@@ -202,7 +204,7 @@ class Controller extends Initializable {
 		listView.getSelectionModel.isEmpty match {
 			case true => warn("Please load a dataset first!")
 			case false => {
-				listView.getSelectionModel.getSelectedItem.contours.map(_.sortPointsByFitting)
+				listView.getSelectionModel.getSelectedItem.checkContoursOk
 			}
 		}
 	}
@@ -216,6 +218,26 @@ class Controller extends Initializable {
 				listView.getSelectionModel.getSelectedItem.killContour(index)
 				frameSlider.setMax(frameSlider.getMax - 1)
 				println("Deleted frame number " + index + ", was " + originalLength + " frames, now " + listView.getSelectionModel.getSelectedItem.contours.length + " long" )
+			}
+		}
+	}
+
+	def skipForward(event: ActionEvent) {
+		listView.getSelectionModel.isEmpty match {
+			case true => warn("Please load a dataset first!")
+			case false => {
+				val index = frameSlider.getValue.toInt
+				if(index < frameSlider.getMax) frameSlider.setValue(index + 1) else frameSlider.setValue(0)
+			}
+		}
+	}
+
+	def skipBackward(event: ActionEvent) {
+		listView.getSelectionModel.isEmpty match {
+			case true => warn("Please load a dataset first!")
+			case false => {
+				val index = frameSlider.getValue.toInt
+				if(index > 0) frameSlider.setValue(index - 1) else frameSlider.setValue(frameSlider.getMax)
 			}
 		}
 	}
@@ -256,12 +278,13 @@ class Controller extends Initializable {
 
 	def copyPolarPoints(event : ActionEvent) {
 		println("Polar Points on Clipboard")
-		val clipboard = Clipboard.getSystemClipboard
-		val content = new ClipboardContent
-		if (listView.getSelectionModel.isEmpty == false) {
-			content.putString(listView.getSelectionModel.getSelectedItem.getContour(presentFrame).toString)
-			clipboard.setContent(content)
-		}
+		// val clipboard = Clipboard.getSystemClipboard
+		// val content = new ClipboardContent
+		// if (listView.getSelectionModel.isEmpty == false) {
+		// 	content.putString(listView.getSelectionModel.getSelectedItem.getContour(presentFrame).toString)
+		// 	clipboard.setContent(content)
+		// }
+		listView.getSelectionModel.getSelectedItem.saveAllContours
 	}
 
 	// ----| File Handling

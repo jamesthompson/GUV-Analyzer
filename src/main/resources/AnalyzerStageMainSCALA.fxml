@@ -95,6 +95,9 @@
                             <NumberAxis id="yAxis1" fx:id="XAxis" animated="false" autoRanging="false" label="Size / arb. units" minorTickCount="0" minorTickVisible="false" side="LEFT" upperBound="10.0" />
                           </yAxis>
                         </LineChart>
+                        <Button id="button4" layoutX="295.0" layoutY="6.0" onAction="#deleteContour" text="Delete Slice" />
+                        <Button id="button4" layoutX="391.0" layoutY="6.0" onAction="#skipForward" text="&gt;" />
+                        <Button id="button4" layoutX="259.0" layoutY="6.0" onAction="#skipBackward" text="&lt;" />
                       </children>
                     </AnchorPane>
                   </content>
