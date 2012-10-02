@@ -2,7 +2,65 @@
 [info] file:/Users/James/Desktop/GUV_Analyzer/target/scala-2.9.2/classes/AnalyzerStageMainSCALA.fxml
 [info] Controller.initialize
 [error] INFO: com.sun.javafx.css.StyleManager loadStylesheetUnPrivileged Could not find stylesheet: file:/Users/James/Desktop/GUVsSCALA/src/Controllers/GUVLook.css
+[info] ImageLoadController.initialize
+[error] INFO: com.sun.javafx.css.StyleManager loadStylesheetUnPrivileged Could not find stylesheet: file:/Users/James/Desktop/GUVsSCALA/src/Controllers/ImageLoadLook.css
+[error] 2012-10-02 13:59:25.524 java[7077:707] Invalid URL passed to an open/save panel: ''.  Using 'file://localhost/Users/James/Documents/Fluctuation%20Analysis/POPC_SHALENE_AUG/' instead.
+[info] Loading ...
+[info] 85 ms
+[info] Finished loading multi-page TIFF!
+[error] 2012-10-02 13:59:32.386 java[7077:707] [JRSAppKitAWT markAppIsDaemon]: Process manager already initialized: can't fully enable headless mode.
+[info] GUV import kicked off...
 [info] Scheduled
 [info] Running
-[info] DialogController.initialize
-[info] Failed
+[info] Finished loading
+[info] #
+[info] # A fatal error has been detected by the Java Runtime Environment:
+[info] #
+[info] #  SIGSEGV (0xb) at pc=0x000000010d9fd9da, pid=7077, tid=140735291486592
+[info] #
+[info] # JRE version: 7.0_05-b05
+[info] # Java VM: Java HotSpot(TM) 64-Bit Server VM (23.1-b03 mixed mode bsd-amd64 compressed oops)
+[info] # Problematic frame:
+[info] # V  [libjvm.dylib+0x49a9da]
+[info] #
+[info] # Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+[info] #
+[info] # An error report file with more information is saved as:
+[info] # /Users/James/Desktop/GUV_Analyzer/hs_err_pid7077.log
+[info] #
+[info] # If you would like to submit a bug report, please visit:
+[info] #   http://bugreport.sun.com/bugreport/crash.jsp
+[info] #
+java.lang.RuntimeException: Nonzero exit code returned from runner: 134
+	at scala.sys.package$.error(package.scala:27)
+	at sbt.BuildCommon$$anonfun$toError$1.apply(Defaults.scala:1340)
+	at sbt.BuildCommon$$anonfun$toError$1.apply(Defaults.scala:1340)
+	at scala.Option.foreach(Option.scala:197)
+	at sbt.BuildCommon$class.toError(Defaults.scala:1340)
+	at sbt.Defaults$.toError(Defaults.scala:34)
+	at sbt.Defaults$$anonfun$runTask$1$$anonfun$apply$27.apply(Defaults.scala:519)
+	at sbt.Defaults$$anonfun$runTask$1$$anonfun$apply$27.apply(Defaults.scala:517)
+	at sbt.Scoped$$anonfun$hf5$1.apply(Structure.scala:581)
+	at sbt.Scoped$$anonfun$hf5$1.apply(Structure.scala:581)
+	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:49)
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$12.apply(Structure.scala:311)
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$12.apply(Structure.scala:311)
+	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40)
+	at sbt.std.Transform$$anon$5.work(System.scala:71)
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:232)
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:232)
+	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18)
+	at sbt.Execute.work(Execute.scala:238)
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:232)
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:232)
+	at sbt.ConcurrentRestrictions$$anon$4$$anonfun$1.apply(ConcurrentRestrictions.scala:159)
+	at sbt.CompletionService$$anon$2.call(CompletionService.scala:30)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+[error] (compile:run) Nonzero exit code returned from runner: 134

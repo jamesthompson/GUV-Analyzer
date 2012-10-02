@@ -52,17 +52,17 @@ class SphericalAnalysisController extends Initializable {
   }
 
   def fit(event : ActionEvent) {
-    msaChart.getData.removeAll(msaChart.getData)
-    val msaData = guv.getMSASeries
-    msaChart.getData.add(msaData)
-    msaChart.getData.add(guv.fitSpectrum(Integer.valueOf(startField.getText), Integer.valueOf(endField.getText), bendingModField.getText.toDouble, redSigmaField.getText.toDouble))
+    // msaChart.getData.removeAll(msaChart.getData)
+    // val msaData = guv.getMSASeries
+    // msaChart.getData.add(msaData)
+    // msaChart.getData.add(guv.fitSpectrum(Integer.valueOf(startField.getText), Integer.valueOf(endField.getText), bendingModField.getText.toDouble, redSigmaField.getText.toDouble))
   }
 
   def saveMSA(event : MouseEvent) {
     System.out.println("MSAs on Clipboard")
     val clipboard : Clipboard = Clipboard.getSystemClipboard
     val content : ClipboardContent = new ClipboardContent
-    content.putString(guv.makeMSAString)
+    // content.putString(guv.makeMSAString)
     clipboard.setContent(content)
   }
 
