@@ -13,7 +13,7 @@ object Legendre {
 		stream.take(l + 1).toIndexedSeq
 	}
 
-	// Associated Legendre Polynomials for the range -1 <= x <= 1 (i.e. the cosine of the angle, 
+	// Associated Legendre Polynomials for the range -1 <= x <= 1 (i.e. the cosine of the angle, ... 
 	// n.b. give 0.0 explicitly if taking cos(pi / 2) as it's an approximation and numerically unstable otherwise.)
 	// Hacked from Numerical Recipes
 	def aLeg(l : Int, m : Int, x : Double = 0.0) : Double = {

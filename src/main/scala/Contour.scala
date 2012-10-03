@@ -82,7 +82,7 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
       series
   }
 
-  def calcFourier = fourierSpectrum = FFT.transformComplex(points.map(_.polar.rad - 1)) // assuming rescaled by R here...
+  def calcFourier = fourierSpectrum = FFT.transformComplex(points.map(_.polar.rad)) // assuming rescaled by R here...
 
   def sqr(in:Double) : Double = in * in
 

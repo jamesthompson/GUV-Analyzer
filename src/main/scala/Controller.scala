@@ -161,7 +161,10 @@ class Controller extends Initializable {
 						protected def call : Void = {
 							val guv : GUV = listView.getSelectionModel.getSelectedItem
 							//guv.calcSphericalHarmonics(modePicker.getNumber.intValue, guv.avgRadius)
-							guv.fitSpectrum(guv.v_qCalc(guv.avgRadius), 4, 30, 1e-3)
+							println("\n\nI'm working on it!!\n\n")
+							// val fourierStuff = guv.v_qCalc2(guv.avgRadius)
+							//guv.fitSpectrum(fourierStuff, 2, 20, 1.0e-5)
+							guv.v_qCalc(guv.avgRadius)
 							return null
 						}
 					}
