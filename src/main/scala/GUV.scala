@@ -68,26 +68,43 @@ class GUV(var contours:IndexedSeq[Contour], val name:String) extends Serializabl
     v_q.toArray
   }
 
+  //Instead of VARIANCE try the power spectrum method shown in the PRL paper... compare this spectrum with that of the Dimova style...
+
   def fitSpectrum(data:Array[Double], startMode:Int, endMode:Int, tensionGuess:Double) : Unit = {
     println("\n\nFit was called!\n\n")
     val v_q : Array[(Int, Double)] = data.map(d => (data.indexOf(d), d)) // Array of (q, amplitude) datapoints
-    //println("\n\n array(int,double)\n" + v_q.mkString("\n"))
     val pf = new Prefactor(100, 35) // from 2 to the difference between endMode and startMode
     def costFunction(params:Array[Double]) : Array[Double] = Array(v_q.slice(2,35).map((p:(Int,Double)) => sqr(pf.sq(p._1, params(0)) - p._2)).sum) // Cost function to minimize -> (sum of the squares)
     def singleObjCompare(a1: Array[Double], a2:Array[Double]) : Boolean =  a1(0) < a2(0) // Minimize it function!
-    val rangeLimits = Array(Interval((tensionGuess * 1e-3), (tensionGuess * 1e3))) // Scale the tension parameter space by 3 orders of magnitude. 
+    val rangeLimits = Array(Interval((tensionGuess * 1e-3), (tensionGuess * 1e3))) // Scale the tension parameter space by 6 orders of magnitude. 
     val params = Array(tensionGuess) // Only one fitting parameter
     val nm = NelderMead(costFunction, 1, singleObjCompare, params, rangeLimits)
     val nmAns = nm.sampledOptimize(100, math.pow(10, -3)) // Optimize!!    
     val bendMod : Array[Double] = (for(i <- 2 until 35) yield pf.sq(v_q(i)._1, nmAns._1(0)) / v_q(i)._2).toArray
-
     val dataout : Array[(Double,Double)] = (for(i <- 2 until 35) yield (pf.sq(v_q(i)._1, nmAns._1(0)),v_q(i)._2)).toArray
-
-    println("\n\n sq : \n\n" + dataout.map(_._1).mkString("\n")) // Print out the outcome of the fit to check...
-    println("\n\n vq : \n\n" + dataout.map(_._2).mkString("\n")) // Print out the outcome of the fit to check...
-
+    println("\n\n Sq : \n\n" + dataout.map(_._1).mkString("\n")) // Print out the outcome of the fit to check...
+    println("\n\n Vq : \n\n" + dataout.map(_._2).mkString("\n")) // Print out the outcome of the fit to check...
+    println("Tension value = " + nmAns._1(0))
+    println("Nelder-Mead:Minimized Value " + nmAns._2(0) + "\nAverage number of evaluations: " + nm.evalCount / 100.0)
   }
 
+  // def fitSpectrum2(data:Array[Double], startMode:Int, endMode:Int, tensionGuess:Double, bendMod:Double) : Unit = {
+  //   println("\n\nFit was called!\n\n")
+  //   val v_q : Array[(Int, Double)] = data.map(d => (data.indexOf(d), d)) // Array of (q, amplitude) datapoints
+  //   // val pf = new Prefactor(100, 35) // from 2 to the difference between endMode and startMode
+  //   def fitFunc(i:Int, ten:Double, bend:Double) : Double = 1 / ((ten * math.pow(i,2)) + (bend * math.pow(i,4)))
+  //   def costFunction(params:Array[Double]) : Array[Double] = Array(v_q.slice(5,15).map((p:(Int,Double)) => sqr(p._2 - fitFunc(p._1, params(0), params(1)))).sum) // Cost function to minimize -> (sum of the squares)
+  //   def singleObjCompare(a1: Array[Double], a2:Array[Double]) : Boolean =  a1(0) < a2(0) // Minimize it function!
+  //   val rangeLimits = Array(Interval((tensionGuess * 1e-3), (tensionGuess * 1e3)),Interval((bendMod * 0.1), (bendMod * 10))) // Scale the tension parameter space by 6 orders of magnitude. 
+  //   val params = Array(tensionGuess, bendMod) // Only one fitting parameter
+  //   val nm = NelderMead(costFunction, 1, singleObjCompare, params, rangeLimits)
+  //   val nmAns = nm.sampledOptimize(100, math.pow(10, -3)) // Optimize!!    
+  //   val dataout : Array[(Double,Double)] = (for(i <- 5 until 15) yield (fitFunc(v_q(i)._1, nmAns._1(0), nmAns._1(1)),v_q(i)._2)).toArray
+  //   println("Tension value = " + nmAns._1(0) + ", Bending mod value = " + nmAns._1(1) )
+  //   println("Nelder-Mead:Minimized Value " + nmAns._2(0) + "\nAverage number of evaluations: " + nm.evalCount / 100.0)
+  //   println("\n\n Fit : \n\n" + dataout.map(_._1).mkString("\n"))
+  //   println("\n\n v_q : \n\n" + dataout.map(_._2).mkString("\n"))
+  // }
 
 
 	def calcScale : Double = contours.map(c => c.getMaxRadius).max

@@ -16,6 +16,12 @@ class Contour(var points : IndexedSeq[Point]) extends Serializable {
    var fourierSpectrum:IndexedSeq[Complex] = null
    lazy val real : IndexedSeq[Double] = fourierSpectrum.map(_.re)
    lazy val imaginary : IndexedSeq[Double] = fourierSpectrum.map(_.im)
+   // lazy val c_n : IndexedSeq[Double] = c_nSqr.map(math.sqrt)
+   // lazy val c_nSqr : IndexedSeq[Double] = {
+   //  val reSqr = real.map(sqr).toList
+   //  val imSqr = imaginary.map(sqr).toList
+   //  reSqr.zip(imSqr).map(c => (c._1 + c._2).toIndexedSeq
+   // }
    def getSphericalAmpsSquared = sphericalHarmonicAmplitudes.map((d:Double) => d*d)
    def getSphericalAmps = sphericalHarmonicAmplitudes
    def getFourier = fourierSpectrum
